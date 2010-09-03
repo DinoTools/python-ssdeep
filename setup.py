@@ -78,11 +78,6 @@ if __name__ == '__main__':
         ext_modules=[SSDEEP_EXT],
         cmdclass={'build_ext': my_build_ext},
         classifiers=[
-        "License :: OSI Approved :: GPLv2",
-        "Programming Language :: Python",
-        "Operating System :: MacOS :: MacOS X",
-        "Operating System :: POSIX",
-        "Operating System :: Microsoft :: Windows",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Intended Audience :: Developers",
         "Development Status :: 4 - Beta"])
