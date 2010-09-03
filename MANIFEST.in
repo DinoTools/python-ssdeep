@@ -1,0 +1,2 @@
+recursive-include ssdeep *
+include ssdeep.pyx ssdeep.c README.rst
