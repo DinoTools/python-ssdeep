@@ -74,7 +74,7 @@ if __name__ == '__main__':
         long_description=read('README.rst'),
         author='Denis Bilenko',
         author_email='denis.bilenko@gmail.com',
-        url='http://pypi.python.org/pypi/ssdeep',
+        url='http://bitbucket.org/denis/ssdeep',
         ext_modules=[SSDEEP_EXT],
         cmdclass={'build_ext': my_build_ext},
         classifiers=[
