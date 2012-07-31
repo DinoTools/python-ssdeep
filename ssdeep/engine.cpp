@@ -1,31 +1,51 @@
-// $Id: engine.cpp 146 2012-05-24 16:05:48Z jessekornblum $ 
+// $Id: engine.cpp 163 2012-07-17 19:59:54Z jessekornblum $ 
 
 #include "main.h"
 #include "ssdeep.h"
+#include "match.h"
+
 
 #define MAX_STATUS_MSG   78
 
-void display_result(state *s, const TCHAR * fn, const char * sum)
+bool display_result(state *s, const TCHAR * fn, const char * sum)
 {
-  if (MODE(mode_match_pretty)) // || MODE(mode_cluster))
+  // Only spend the extra time to make a Filedata object if we need to
+  if (MODE(mode_match_pretty) or MODE(mode_match) or MODE(mode_directory))
   {
-    if (match_add(s,"",fn,sum))
-      print_error_unicode(s,fn,"Unable to add hash to set of known hashes");
-  }
-  else if (MODE(mode_match) || MODE(mode_directory))
-  {
-    match_compare(s,"",fn,sum);
+    Filedata * f;
 
-    if (MODE(mode_directory))
-      if (match_add(s,"",fn,sum))
+    try 
+    {
+      f = new Filedata(fn, sum);
+    } 
+    catch (std::bad_alloc)
+    {
+      fatal_error("%s: Unable to create Filedata object in engine.cpp:display_result()", __progname);
+    }
+
+    if (MODE(mode_match_pretty)) 
+    {
+      if (match_add(s,f))
 	print_error_unicode(s,fn,"Unable to add hash to set of known hashes");
+    }
+    else
+    {
+      // This block is for MODE(mode_match) or MODE(mode_directory)
+      match_compare(s,f);
+
+      if (MODE(mode_directory))
+	if (match_add(s,f))
+	  print_error_unicode(s,
+			      fn,
+			      "Unable to add hash to set of known hashes");
+    }
   }
   else
   {
     // No special options selected. Display the hash for this file
     if (s->first_file_processed)
     {
-      printf ("%s%s", OUTPUT_FILE_HEADER,NEWLINE);
+      print_status("%s", OUTPUT_FILE_HEADER);
       s->first_file_processed = false;
     }
 
@@ -33,6 +53,8 @@ void display_result(state *s, const TCHAR * fn, const char * sum)
     display_filename(stdout,fn,TRUE);
     print_status("\"");
   }
+
+  return false;
 }
 
 

@@ -1,3 +1,35 @@
+2012-07-23: Jesse Korblum <research@jessekornblum.com>:
+
+	* main.cpp, match.cpp: Renamed the match_pretty function for clarity.
+	
+2012-07-17: Jesse Korblum <research@jessekornblum.com>:
+
+	* match.cpp: Fixing bugs in matching, clustering modes
+	* main.cpp: Clarifying comments. Added sanity check for -c, -g
+
+2012-07-16: Jesse Korblum <research@jessekornblum.com>:
+
+	* filedata.cpp: Added includes for *nix compilation
+
+2012-07-14 Jesse Kornblum <research@jessekornblum.com>:
+
+	* win.sh: Updated for C++ compiler warnings
+	* normal.sh: Updated for C++ compiler warnings
+	* fuzzy.c: Corrected logic error for when sigs don't have filenames
+	* ui.cpp: Added const to print_error's state variable
+	* match.cpp: Rewrote to use Filedata class
+	* filedata.cpp: Created Filedata class
+	* main.cpp: Adapted to use Filedata class
+
+2012-07-13 Jesse Kornblum <research@jessekornblum.com>:
+
+	* fuzzy.c: Fixed major bug regarding incorrect match scores for hashes with long filenames
+	* dig.cpp: Added warning message when not all data on stdin was hashed. Also increased stdin buffer to 512MB.
+	* configure.ac: Version bump to 2.9.
+	* main.cpp: Added flags for clustering mode
+	* ssdeep.h: Added flags for clustering mode
+	* match.cpp: Setting up for clustering mode
+	
 2012-05-25 Jesse Kornblum <research@jessekornblum.com>:
 
 	* main.cpp: Updated command line argument processing

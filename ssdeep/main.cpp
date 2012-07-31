@@ -2,12 +2,13 @@
 // Copyright (C) 2012 Kyrus
 // Copyright (C) 2010 ManTech International Corporation
 //
-// $Id: main.cpp 147 2012-05-25 12:14:50Z jessekornblum $
+// $Id: main.cpp 165 2012-07-23 16:18:18Z jessekornblum $
 //
 // This program is licensed under version 2 of the GNU Public License.
 // See the file COPYING for details. 
 
 #include "ssdeep.h"
+#include "match.h"
 
 #ifdef _WIN32 
 // This can't go in main.h or we get multiple definitions of it
@@ -29,8 +30,6 @@ static bool initialize_state(state *s)
 
   s->threshold = 0;
 
-  s->next_match_id = 0;
-
   return false;
 }
 
@@ -42,13 +41,14 @@ static void usage(void)
   print_status ("%s version %s by Jesse Kornblum", __progname, VERSION);
   print_status ("Copyright (C) 2012 Kyrus");
   print_status ("");
-  print_status ("Usage: %s [-m file] [-k file] [-dpvrsblcxa] [-t val] [-h|-V] [FILES]", 
+  print_status ("Usage: %s [-m file] [-k file] [-dpgvrsblcxa] [-t val] [-h|-V] [FILES]", 
 	  __progname);
 
   print_status ("-m - Match FILES against known hashes in file");
   print_status ("-k - Match signatures in FILES against signatures in file");
   print_status ("-d - Directory mode, compare all files in a directory");
   print_status ("-p - Pretty matching mode. Similar to -d but includes all matches");
+  print_status ("-g - Cluster matches together");
   print_status ("-v - Verbose mode. Displays filename as its being processed");
   print_status ("-r - Recursive mode");
 
@@ -69,9 +69,14 @@ static void usage(void)
 static void process_cmd_line(state *s, int argc, char **argv)
 {
   int i, match_files_loaded = FALSE;
-  while ((i=getopt(argc,argv,"avhVpdsblcxt:rm:k:")) != -1) {
+
+  while ((i=getopt(argc,argv,"gavhVpdsblcxt:rm:k:")) != -1) {
     switch(i) {
       
+    case 'g':
+      s->mode |= mode_cluster;
+      break;
+
     case 'a':
       s->mode |= mode_display_all;
       break;
@@ -167,6 +172,10 @@ static void process_cmd_line(state *s, int argc, char **argv)
 	       ((s->mode & mode_match_pretty) && (s->mode & mode_directory)),
 	       "Directory mode and pretty matching are mutually exclusive");
 
+  sanity_check(s,
+	       MODE(mode_csv) and MODE(mode_cluster),
+	       "CSV and clustering modes cannot be combined");
+
   // -m, -p, and -d are incompatible with -k and -x
   // The former treat FILES as raw files. The latter require them to be sigs
   sanity_check(s,
@@ -249,7 +258,7 @@ int main(int argc, char **argv)
 #ifndef __GLIBC__
   //  __progname  = basename(argv[0]);
 #endif
-
+  
   s = new state;
   if (initialize_state(s))
     fatal_error("%s: Unable to initialize state variable", __progname);
@@ -326,12 +335,12 @@ int main(int argc, char **argv)
   // If the user has requested us to compare signature files, use
   // our existng code to pretty-print directory matching to do the
   // work for us.
-  if (s->mode & mode_sigcompare)
+  if (MODE(mode_sigcompare))
     s->mode |= mode_match_pretty;
-  if (s->mode & mode_match_pretty)
-    match_pretty(s);
-  //  if (s->mode & mode_cluster)
-  //    display_clusters(s);
+  if (MODE(mode_match_pretty) or MODE(mode_sigcompare) or MODE(mode_cluster))
+    find_matches_in_known(s);
+  if (MODE(mode_cluster))
+    display_clusters(s);
 
   return (EXIT_SUCCESS);
 }

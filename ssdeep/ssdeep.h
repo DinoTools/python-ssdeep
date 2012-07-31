@@ -5,7 +5,7 @@
 // Copyright (C) 2012 Kyrus
 // Copyright (C) 2008 ManTech International Corporation
 //
-// $Id: ssdeep.h 147 2012-05-25 12:14:50Z jessekornblum $ 
+// $Id: ssdeep.h 163 2012-07-17 19:59:54Z jessekornblum $ 
 //
 
 #include "main.h"
@@ -17,6 +17,7 @@
 
 #include "fuzzy.h"
 #include "tchar-local.h"
+#include "filedata.h"
 
 // This is a kludge, but it works.
 #define __progname "ssdeep"
@@ -47,7 +48,7 @@ memset(VAR,0,SIZE * sizeof(TYPE));
 #define file_unknown  254
 
 
-typedef struct 
+typedef struct _filedata_t
 {
   uint64_t id;
  
@@ -65,6 +66,10 @@ typedef struct
 
   /// File of hashes where we got this known file from.
   std::string match_file;
+
+  /// Cluster which contains this file
+  std::set<_filedata_t> * cluster;
+
 } filedata_t;
 
 
@@ -74,8 +79,10 @@ typedef struct {
   bool       first_file_processed;
 
   // Known hashes
-  uint64_t    next_match_id;
-  std::vector<filedata_t *> all_files;
+  std::vector<Filedata *> all_files;
+
+  // Known clusters
+  std::set< std::set<Filedata *> * > all_clusters;
 
   /// Display files who score above the threshold
   uint8_t   threshold;
@@ -85,6 +92,14 @@ typedef struct {
 
   int       argc;
   TCHAR     **argv;
+
+  /// Current line number in file of known hashes
+  uint64_t line_number;
+  /// File handle to file of known hashes
+  FILE     * known_handle;
+  /// Filename of known hashes
+  char     * known_fn;
+
 } state;
 
 
@@ -136,6 +151,8 @@ int getopt(int argc, char *const argv[], const char *optstring);
 #define mode_sigcompare   1<<10
 #define mode_display_all  1<<11
 #define mode_compare_unknown 1<<12
+#define mode_cluster      1<<13
+#define mode_recursive_cluster 1<<14
 
 #define MODE(A)   (s->mode & A)
 
@@ -160,7 +177,7 @@ int process_stdin(state *s);
 // Fuzzy Hashing Engine
 // *********************************************************************
 int hash_file(state *s, TCHAR *fn);
-void display_result(state *s, const TCHAR * fn, const char * sum);
+bool display_result(state *s, const TCHAR * fn, const char * sum);
 
 
 // *********************************************************************
@@ -210,48 +227,11 @@ off_t find_file_size(FILE *h);
 // User Interface Functions
 // *********************************************************************
 void print_status(const char *fmt, ...);
-void print_error(state *s, const char *fmt, ...);
+void print_error(const state *s, const char *fmt, ...);
 void print_error_unicode(state *s, const TCHAR *fn, const char *fmt, ...);
 void internal_error(const char *fmt, ... );
 void fatal_error(const char *fmt, ... );
 void display_filename(FILE *out, const TCHAR *fn, int escape_quotes);
-
-
-// *********************************************************************
-// Matching functions
-// *********************************************************************
-
-// Match the file named fn with the hash sum against the set of knowns and display any matches. 
-//
-/// @return Returns false if there are no matches, true if at least one match
-/// @param s State variable
-/// @param match_file Filename where we got the hash of the unknown file.
-///                   May be the empty string.
-/// @param fn Filename of the unknown file we are comparing
-/// @param sum Fuzzy hash of the unknown file we are comparing
-bool match_compare(state *s, 
-		   const char * match_file, 
-		   const TCHAR *fn, 
-		   const char *sum);
-
-// Load a file of known hashes
-bool match_load(state *s, char *fn);
-
-// Add a single new hash to the set of known hashes
-bool match_add(state *s, const char * match_file, const TCHAR *fn, const char *hash);
-
-// Display all matches in the set of known hashes nicely
-bool match_pretty(state *s);
-
-// Load the known hashes from the file fn and compare them to the
-// set of known hashes
-bool match_compare_unknown(state *s, const char * fn);
-
-// Display the results of clustering operations
-//int display_clusters(state *s);
-
-
-
 
 
 

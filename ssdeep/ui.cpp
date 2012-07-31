@@ -1,5 +1,5 @@
 
-/* $Id: ui.cpp 144 2012-04-24 14:59:33Z jessekornblum $ */
+/* $Id: ui.cpp 152 2012-07-14 18:09:45Z jessekornblum $ */
 
 #include "ssdeep.h"
 #include <stdarg.h>
@@ -16,7 +16,7 @@ void print_status(const char *fmt, ...)
 }
 
 
-void print_error(state *s, const char *fmt, ...)
+void print_error(const state *s, const char *fmt, ...)
 {
   if (NULL == s)
     internal_error("%s: NULL state passed to print_error", __progname);
