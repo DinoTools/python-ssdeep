@@ -1,83 +1,79 @@
 #!/usr/bin/env python
-import sys
-import os
 import glob
+import os
 import re
-from os.path import join, dirname
+import subprocess
+import sys
 
-if sys.argv[1:] == ['test']:
-    import doctest
-    doctest.testfile('README.rst')
-    sys.exit()
-
-try:
-    from setuptools import Extension, setup
-except ImportError:
-    from distutils.core import Extension, setup
 from distutils.command import build_ext
+from setuptools import Extension, setup
 
-VERSION = re.search("__version__\s*=\s*'(.*)'", open('ssdeep.pyx').read(), re.M).group(1)
-assert VERSION
-SOURCE = 'ssdeep.pyx'
+VERSION = re.search("__version__\s*=\s*\"(.*)\"", open('ssdeep.pyx').read(), re.M).group(1)
 
-class my_build_ext(build_ext.build_ext):
+if sys.version_info.major == 3:
+    CYTHON_OPTS = "-3 -f -o ssdeep.c"
+else:
+    CYTHON_OPTS = "-2 -f"
 
-    def compile_cython(self):
-        if os.path.exists('ssdeep.c'):
-            c_mtime = os.stat('ssdeep.c').st_mtime
-            source_mtime = os.stat(SOURCE).st_mtime
-            if source_mtime - c_mtime < 1:
-                return
-        print >> sys.stderr, 'Running cython'
-        cython_result = os.system('cython ssdeep.pyx')
-        if cython_result:
-            if os.system('cython -V 2> %s' % os.devnull):
-                # there's no cython in the system
-                print >> sys.stderr, 'No cython found, cannot rebuild ssdeep.c'
-                return
-            sys.exit(1)
+ssdeep_extension = Extension(
+    include_dirs=["ssdeep"],
+    name="ssdeep",
+    sources=["ssdeep.c"]
+)
 
-    def make_ssdeep(self):
-        if not get_objects():
-            result = os.system('cd ssdeep && ./configure && make')
-            if result:
-                sys.exit(result)
-        SSDEEP_EXT.extra_objects = get_objects()
-        if not SSDEEP_EXT.extra_objects:
-            sys.exit('failed to build ssdeep')
-
+class BuildExtension(build_ext.build_ext):
     def build_extension(self, ext):
         self.compile_cython()
-        self.make_ssdeep()
+        self.build_ssdeep()
         return build_ext.build_ext.build_extension(self, ext)
 
-SSDEEP_EXT = Extension(name='ssdeep',
-                       sources=['ssdeep.c'],
-                       include_dirs=['ssdeep'])
+    def build_ssdeep(self):
+        if len(get_objects()) == 0:
+            returncode = subprocess.call(
+                "(cd ssdeep && ./configure && make)",
+                shell=True
+            )
+            if returncode != 0:
+                sys.exit("Failed while running ./configure and make")
+
+        ssdeep_extension.extra_objects = get_objects()
+        if len(ssdeep_extension.extra_objects) == 0:
+            sys.exit("Can't build ssdeep. No objects found.")
+
+    def compile_cython(self):
+        returncode = subprocess.call(
+            "cython %s ssdeep.pyx" % CYTHON_OPTS,
+            shell=True
+        )
+        if returncode != 0:
+            sys.exit("Error running cython")
+
 
 def get_objects():
-    objects = set(glob.glob('ssdeep/*.o')) - set(['ssdeep/main.o'])
-    if not objects:
-        objects = set(glob.glob('ssdeep/*.obj')) - set(['ssdeep/main.obj'])
-    return objects
+    objects = glob.glob("ssdeep/.libs/*.o")
+    if len(objects) > 0:
+        return objects
+    return glob.glob("ssdeep/.libs/*.obj")
 
-SSDEEP_EXT.extra_objects = get_objects()
 
-def read(name):
-    return open(join(dirname(__file__), name)).read()
+ssdeep_extension.extra_objects = get_objects()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     setup(
-        name='ssdeep',
-        version=VERSION,
-        description='Python wrapper for ssdeep library',
-        long_description=read('README.rst'),
-        author='Denis Bilenko',
-        author_email='denis.bilenko@gmail.com',
-        url='http://bitbucket.org/denis/ssdeep',
-        ext_modules=[SSDEEP_EXT],
-        cmdclass={'build_ext': my_build_ext},
+        author="Philipp Seidel",
+        author_email="",
         classifiers=[
-        "Topic :: Software Development :: Libraries :: Python Modules",
-        "Intended Audience :: Developers",
-        "Development Status :: 4 - Beta"])
+            "Topic :: Software Development :: Libraries :: Python Modules",
+            "Intended Audience :: Developers",
+            "Development Status :: 4 - Beta"
+        ],
+        cmdclass={
+            "build_ext": BuildExtension
+        },
+        description="Python wrapper for the ssdeep library",
+        ext_modules=[ssdeep_extension],
+        name="ssdeep",
+        url="http://github.com/DinoTools/python-ssdeep",
+        version=VERSION
+    )
