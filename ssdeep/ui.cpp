@@ -1,10 +1,10 @@
 
-/* $Id: ui.c 61 2008-02-22 23:18:59Z jessekornblum $ */
+/* $Id: ui.cpp 144 2012-04-24 14:59:33Z jessekornblum $ */
 
 #include "ssdeep.h"
 #include <stdarg.h>
 
-void print_status(char *fmt, ...)
+void print_status(const char *fmt, ...)
 {
   va_list(ap);
   
@@ -16,7 +16,7 @@ void print_status(char *fmt, ...)
 }
 
 
-void print_error(state *s, char *fmt, ...)
+void print_error(state *s, const char *fmt, ...)
 {
   if (NULL == s)
     internal_error("%s: NULL state passed to print_error", __progname);
@@ -27,10 +27,10 @@ void print_error(state *s, char *fmt, ...)
   va_list(ap);
   
   va_start(ap,fmt); 
-  vprintf(fmt,ap); 
+  vfprintf(stderr,fmt,ap); 
   va_end(ap); 
   
-  printf ("%s", NEWLINE);
+  fprintf (stderr,"%s", NEWLINE);
 
 }
 
@@ -45,14 +45,14 @@ if (vfprintf(HANDLE,MSG,ap) < 0)  \
 va_end(ap); fprintf (HANDLE,"%s", NEWLINE);
 
 
-void print_error_unicode(state *s, TCHAR *fn, char *fmt, ...)
+void print_error_unicode(state *s, const TCHAR *fn, const char *fmt, ...)
 {
   if (NULL == s)
     internal_error("%s: NULL state passed to print_error_unicode", __progname);
 
   if (!(s->mode & mode_silent))
     {
-      display_filename(stderr,fn);
+      display_filename(stderr,fn,FALSE);
       fprintf(stderr,": ");
       MD5DEEP_PRINT_MSG(stderr,fmt);
     }
@@ -63,7 +63,7 @@ void print_error_unicode(state *s, TCHAR *fn, char *fmt, ...)
 /* Internal errors are so serious that we ignore the user's wishes 
    about silent mode. Our need to debug the program outweighs their
    preferences. Besides, the program is probably crashing anyway... */
-void internal_error(char *fmt, ... )
+void internal_error(const char *fmt, ... )
 {
   MD5DEEP_PRINT_MSG(stderr,fmt);  
   print_status ("%s: Internal error. Contact developer!", __progname);  
@@ -72,7 +72,7 @@ void internal_error(char *fmt, ... )
 
 
 
-void fatal_error(char *fmt, ... )
+void fatal_error(const char *fmt, ... )
 {
   va_list(ap);
   
@@ -86,28 +86,50 @@ void fatal_error(char *fmt, ... )
 
 
 #ifdef _WIN32
-void display_filename(FILE *out, TCHAR *fn)
+void display_filename(FILE *out, const TCHAR *fn, int escape_quotes)
 {
   size_t pos,len;
 
-  if (NULL == fn)
+  if (NULL == fn || NULL == out)
     return;
 
   len = _tcslen(fn);
 
   for (pos = 0 ; pos < len ; ++pos)
+  {
+    // If desired, escape quotation marks. Used for CSV modes 
+    if (escape_quotes && ('"' == ((fn[pos] & 0xff00) >> 16)))
     {
-      /* Windows can only display the English (00) code page
-	 on the command line. */
-      if (0 == (fn[pos] & 0xff00))
-	_ftprintf(out, _TEXT("%c"), fn[pos]);
-      else
-	_ftprintf(out, _TEXT("?"));
+      fprintf(out,"\\\"");
     }
+    else
+    {
+      // Windows can only display the English (00) code page
+      // on the command line. 
+      if (0 == (fn[pos] & 0xff00))
+	fputc(fn[pos],out);
+      //	_ftprintf(out, _TEXT("%c"), fn[pos]);
+      else 
+	fputc('?',out);
+      //	_ftprintf(out, _TEXT("?"));
+    }
+  }
 }
 #else
-void display_filename(FILE *out, TCHAR *fn)
+void display_filename(FILE *out, const TCHAR *fn, int escape_quotes)
 {
-  fprintf (out,"%s", fn);
+  size_t pos, len;
+
+  if (NULL == fn || NULL == out)
+    return;
+
+  len = _tcslen(fn);
+  for (pos = 0 ; pos < len ; ++pos)
+  {
+    if (escape_quotes && '"' == fn[pos])
+      _ftprintf(out, _TEXT("\\\""));
+    else
+      _ftprintf(out, _TEXT("%c"), fn[pos]);
+  } 
 }
 #endif

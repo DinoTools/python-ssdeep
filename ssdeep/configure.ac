@@ -1,4 +1,4 @@
-AC_INIT([SSDEEP],[2.5],[research@jessekornblum.com])
+AC_INIT([SSDEEP],[2.8],[research@jessekornblum.com])
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_FILES([Makefile])
@@ -7,6 +7,7 @@ AM_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
 
 AC_PROG_CC
+AC_PROG_CXX
 AC_LIBTOOL_WIN32_DLL
 #AC_PROG_LIBTOOL
 AM_PROG_LIBTOOL
@@ -31,6 +32,7 @@ for spfx in /usr/local /opt/local /sw ; do
 done
 
 AC_C_BIGENDIAN
+AC_SYS_LARGEFILE
 
 AC_CHECK_HEADERS([libgen.h])
 AC_CHECK_HEADERS([dirent.h])

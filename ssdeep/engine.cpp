@@ -1,9 +1,40 @@
-
-// $Id: engine.c 78 2009-07-11 20:17:05Z jessekornblum $ 
+// $Id: engine.cpp 146 2012-05-24 16:05:48Z jessekornblum $ 
 
 #include "main.h"
+#include "ssdeep.h"
 
 #define MAX_STATUS_MSG   78
+
+void display_result(state *s, const TCHAR * fn, const char * sum)
+{
+  if (MODE(mode_match_pretty)) // || MODE(mode_cluster))
+  {
+    if (match_add(s,"",fn,sum))
+      print_error_unicode(s,fn,"Unable to add hash to set of known hashes");
+  }
+  else if (MODE(mode_match) || MODE(mode_directory))
+  {
+    match_compare(s,"",fn,sum);
+
+    if (MODE(mode_directory))
+      if (match_add(s,"",fn,sum))
+	print_error_unicode(s,fn,"Unable to add hash to set of known hashes");
+  }
+  else
+  {
+    // No special options selected. Display the hash for this file
+    if (s->first_file_processed)
+    {
+      printf ("%s%s", OUTPUT_FILE_HEADER,NEWLINE);
+      s->first_file_processed = false;
+    }
+
+    printf ("%s,\"", sum);
+    display_filename(stdout,fn,TRUE);
+    print_status("\"");
+  }
+}
+
 
 int hash_file(state *s, TCHAR *fn)
 {
@@ -60,31 +91,11 @@ int hash_file(state *s, TCHAR *fn)
 
   fuzzy_hash_file(handle,sum);
   prepare_filename(s,fn);
+  display_result(s,fn,sum);
 
-  if (MODE(mode_match_pretty))
-  {
-    if (match_add(s,NULL,fn,sum))
-      print_error_unicode(s,fn,"Unable to add hash to set of known hashes");
-  }
-  else if (MODE(mode_match) || MODE(mode_directory))
-  {
-    match_compare(s,NULL,fn,sum);
-
-    if (MODE(mode_directory))
-      if (match_add(s,NULL,fn,sum))
-	print_error_unicode(s,fn,"Unable to add hash to set of known hashes");
-  }
-  else
-  {
-    if (s->first_file_processed)
-    {
-      printf ("%s%s", OUTPUT_FILE_HEADER,NEWLINE);
-      s->first_file_processed = FALSE;
-    }
-    printf ("%s,\"", sum);
-    display_filename(stdout,fn);
-    print_status("\"");
-  }
+  if (find_file_size(handle) > SSDEEP_MIN_FILE_SIZE)
+    s->found_meaningful_file = true;
+  s->processed_file = true;
 
   fclose(handle);
   free(sum);

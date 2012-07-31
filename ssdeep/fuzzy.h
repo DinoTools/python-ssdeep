@@ -1,7 +1,10 @@
+#ifndef __FUZZY_H
+# define __FUZZY_H
+
 // Fuzzy Hashing by Jesse Kornblum
-// Copyright (C) ManTech International Corporation 2010
+// Copyright (C) Kyrus 2012
 //
-// $Id: fuzzy.h 100 2010-05-06 12:08:12Z jessekornblum $ 
+// $Id: fuzzy.h 147 2012-05-25 12:14:50Z jessekornblum $ 
 
 /// @mainpage
 /// This is the documentation for the fuzzy hashing API from ssdeep.
@@ -13,10 +16,10 @@
 ///
 /// @copydoc fuzzy.h
 ///
-/// @version 2.5
-/// @date May 2010
+/// @version 2.8
+/// @date 25 May 2012
 ///
-/// @author Jesse Kornblum, research {at jessekornblum dot} com. 
+/// @author Jesse Kornblum, research@jessekornblum.com. 
 
 /// @file fuzzy.h
 /// @brief
@@ -40,8 +43,6 @@ extern "C" {
 # include <inttypes.h>
 #endif
 
-#ifndef _FUZZY_H_
-# define _FUZZY_H_
 
 
 /// @brief Compute the fuzzy hash of a buffer
@@ -73,6 +74,7 @@ extern int fuzzy_hash_buf(const unsigned char *buf,
 /// @return Returns zero on success, non-zero on error
 extern int fuzzy_hash_file(FILE *handle,
 			   char *result);
+
 
 /// @brief Compute the fuzzy hash of a file
 ///
@@ -112,4 +114,4 @@ extern int fuzzy_compare(const char *sig1, const char *sig2);
 #endif
 
 
-#endif   // ifndef _FUZZY_H_
+#endif   // ifndef __FUZZY_H

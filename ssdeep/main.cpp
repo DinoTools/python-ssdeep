@@ -1,25 +1,37 @@
 // Fuzzy Hashing by Jesse Kornblum
+// Copyright (C) 2012 Kyrus
 // Copyright (C) 2010 ManTech International Corporation
 //
-// $Id: main.c 97 2010-03-19 15:10:06Z jessekornblum $
+// $Id: main.cpp 147 2012-05-25 12:14:50Z jessekornblum $
 //
 // This program is licensed under version 2 of the GNU Public License.
 // See the file COPYING for details. 
 
-
 #include "ssdeep.h"
 
-static int initialize_state(state *s)
-{
-  if (match_init(s))
-    return TRUE;
+#ifdef _WIN32 
+// This can't go in main.h or we get multiple definitions of it
+// Allows us to open standard input in binary mode by default 
+// See http://gnuwin32.sourceforge.net/compile.html for more 
+int _CRT_fmode = _O_BINARY;
+#endif
 
-  s->first_file_processed = TRUE;
-  s->mode                 = mode_none;
+
+static bool initialize_state(state *s)
+{
+  if (NULL == s)
+    return true;
+
+  s->mode                  = mode_none;
+  s->first_file_processed  = true;
+  s->found_meaningful_file = false;
+  s->processed_file        = false;
 
   s->threshold = 0;
 
-  return FALSE;
+  s->next_match_id = 0;
+
+  return false;
 }
 
 
@@ -28,18 +40,18 @@ static int initialize_state(state *s)
 static void usage(void)
 {
   print_status ("%s version %s by Jesse Kornblum", __progname, VERSION);
-  print_status ("Copyright (C) 2010 ManTech International Corporation");
+  print_status ("Copyright (C) 2012 Kyrus");
   print_status ("");
-  print_status ("Usage: %s [-m file] [-k file] [-vprdsblcxa] [-t val] [-h|-V] [FILES]", 
+  print_status ("Usage: %s [-m file] [-k file] [-dpvrsblcxa] [-t val] [-h|-V] [FILES]", 
 	  __progname);
 
   print_status ("-m - Match FILES against known hashes in file");
   print_status ("-k - Match signatures in FILES against signatures in file");
-
-  print_status ("-v - Verbose mode. Displays filename as its being processed");
-  print_status ("-p - Pretty matching mode. Similar to -d but includes all matches");
-  print_status ("-r - Recursive mode");
   print_status ("-d - Directory mode, compare all files in a directory");
+  print_status ("-p - Pretty matching mode. Similar to -d but includes all matches");
+  print_status ("-v - Verbose mode. Displays filename as its being processed");
+  print_status ("-r - Recursive mode");
+
   print_status ("-s - Silent mode; all errors are supressed");
   print_status ("-b - Uses only the bare name of files; all path information omitted");
   print_status ("-l - Uses relative paths for filenames");
@@ -59,7 +71,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
   int i, match_files_loaded = FALSE;
   while ((i=getopt(argc,argv,"avhVpdsblcxt:rm:k:")) != -1) {
     switch(i) {
-
+      
     case 'a':
       s->mode |= mode_display_all;
       break;
@@ -69,7 +81,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
       {
 	print_error(s,"%s: Already at maximum verbosity", __progname);
 	print_error(s,
-		    "%s: Error message display to user correctly", 
+		    "%s: Error message displayed to user correctly", 
 		    __progname);
       }
       else
@@ -97,8 +109,6 @@ static void process_cmd_line(state *s, int argc, char **argv)
       s->mode |= mode_csv; break;
 
     case 'x':
-      if (MODE(mode_match) || MODE(mode_sigcompare))
-	fatal_error("Signature matching cannot be combined with other matching modes");
       s->mode |= mode_sigcompare; break;
 
     case 'r':
@@ -115,7 +125,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
       if (MODE(mode_compare_unknown) || MODE(mode_sigcompare))
 	fatal_error("Positive matching cannot be combined with other matching modes");
       s->mode |= mode_match;
-      if (!match_load(s,optarg))
+      if (not match_load(s,optarg))
 	match_files_loaded = TRUE;
       break;
       
@@ -123,7 +133,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
       if (MODE(mode_match) || MODE(mode_sigcompare))
 	fatal_error("Signature matching cannot be combined with other matching modes");
       s->mode |= mode_compare_unknown;
-      if (!match_load(s,optarg))
+      if (not match_load(s,optarg))
 	match_files_loaded = TRUE;
       break;
 
@@ -146,7 +156,7 @@ static void process_cmd_line(state *s, int argc, char **argv)
   // the command line arguments.
   sanity_check(s,
 	       ((MODE(mode_match) || MODE(mode_compare_unknown))
-		&& !match_files_loaded),
+		&& not match_files_loaded),
 	       "No matching files loaded");
   
   sanity_check(s,
@@ -155,7 +165,17 @@ static void process_cmd_line(state *s, int argc, char **argv)
 
   sanity_check(s,
 	       ((s->mode & mode_match_pretty) && (s->mode & mode_directory)),
-	       "Directory mode and pretty matching are mutallty exclusive");
+	       "Directory mode and pretty matching are mutually exclusive");
+
+  // -m, -p, and -d are incompatible with -k and -x
+  // The former treat FILES as raw files. The latter require them to be sigs
+  sanity_check(s,
+	       ((MODE(mode_match) or MODE(mode_match_pretty) or MODE(mode_directory))
+		and
+		(MODE(mode_compare_unknown) or MODE(mode_sigcompare))),
+	       "Incompatible matching modes");
+
+
 }
 
 
@@ -227,13 +247,10 @@ int main(int argc, char **argv)
   TCHAR *fn, *cwd;
 
 #ifndef __GLIBC__
-  __progname  = basename(argv[0]);
+  //  __progname  = basename(argv[0]);
 #endif
 
-  s = (state *)malloc(sizeof(state));
-  if (NULL == s)
-    fatal_error("%s: Unable to allocate state variable", __progname);
-
+  s = new state;
   if (initialize_state(s))
     fatal_error("%s: Unable to initialize state variable", __progname);
 
@@ -251,45 +268,58 @@ int main(int argc, char **argv)
   // or directory we're supposed to process. If there's nothing
   // specified, we should tackle standard input 
   if (optind == argc)
-    fatal_error("%s: No input files", __progname);
-
-  MD5DEEP_ALLOC(TCHAR,fn,PATH_MAX);
-  MD5DEEP_ALLOC(TCHAR,cwd,PATH_MAX);
-
-  cwd = _tgetcwd(cwd,PATH_MAX);
-  if (NULL == cwd)
-    fatal_error("%s: %s", __progname, strerror(errno));
-  
-  count = optind;
-  
-  // The signature comparsion mode needs to use the command line
-  // arguments and argument count. We don't do wildcard expansion
-  // on it on Win32 (i.e. where it matters). The setting of 'goal'
-  // to the original argc occured at the start of main(), so we just
-  // need to update it if we're *not* in signature compare mode.
-  if (!(s->mode & mode_sigcompare))
   {
-    goal = s->argc;
+    status = process_stdin(s);
   }
-
-  while (count < goal)
+  else
   {
-    if (MODE(mode_sigcompare))
-      match_load(s,argv[count]);
-    else if (MODE(mode_compare_unknown))
-      match_compare_unknown(s,argv[count]);
-    else
+    MD5DEEP_ALLOC(TCHAR,fn,PATH_MAX);
+    MD5DEEP_ALLOC(TCHAR,cwd,PATH_MAX);
+    
+    cwd = _tgetcwd(cwd,PATH_MAX);
+    if (NULL == cwd)
+      fatal_error("%s: %s", __progname, strerror(errno));
+  
+    count = optind;
+  
+    // The signature comparsion mode needs to use the command line
+    // arguments and argument count. We don't do wildcard expansion
+    // on it on Win32 (i.e. where it matters). The setting of 'goal'
+    // to the original argc occured at the start of main(), so we just
+    // need to update it if we're *not* in signature compare mode.
+    if (not (s->mode & mode_sigcompare))
     {
-      generate_filename(s,fn,cwd,s->argv[count]);
+      goal = s->argc;
+    }
+    
+    while (count < goal)
+    {
+      if (MODE(mode_sigcompare))
+	match_load(s,argv[count]);
+      else if (MODE(mode_compare_unknown))
+	match_compare_unknown(s,argv[count]);
+      else
+      {
+	generate_filename(s,fn,cwd,s->argv[count]);
 
 #ifdef _WIN32
-      status = process_win32(s,fn);
+	status = process_win32(s,fn);
 #else
-      status = process_normal(s,fn);
+	status = process_normal(s,fn);
 #endif
+      }
+      
+      ++count;
     }
 
-    ++count;
+    // If we processed files, but didn't find anything large enough
+    // to be meaningful, we should display a warning message to the user.
+    // This happens mostly when people are testing very small files
+    // e.g. $ echo "hello world" > foo && ssdeep foo
+    if ((not s->found_meaningful_file) and s->processed_file)
+    {
+      print_error(s,"%s: Did not process files large enough to produce meaningful results", __progname);
+    }
   }
 
 
@@ -300,6 +330,8 @@ int main(int argc, char **argv)
     s->mode |= mode_match_pretty;
   if (s->mode & mode_match_pretty)
     match_pretty(s);
-  
+  //  if (s->mode & mode_cluster)
+  //    display_clusters(s);
+
   return (EXIT_SUCCESS);
 }

@@ -9,7 +9,7 @@
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 //
-// $Id: dig.c 78 2009-07-11 20:17:05Z jessekornblum $
+// $Id: dig.cpp 144 2012-04-24 14:59:33Z jessekornblum $
 
 #include "ssdeep.h"
 
@@ -26,13 +26,13 @@ static void remove_double_slash(TCHAR *fn)
 {
   size_t tsize = sizeof(TCHAR);
   //  TCHAR DOUBLE_DIR[4];
-  TCHAR *tmp = fn, *new;
+  TCHAR *tmp = fn, *new_str;
 
   // RBF - Why on earth do we generate DOUBLE_DIR dynamically *every time*?
   //  _sntprintf(DOUBLE_DIR,3,_TEXT("%c%c"),DIR_SEPARATOR,DIR_SEPARATOR);
 
-  new = _tcsstr(tmp,DOUBLE_DIR);
-  while (NULL != new)
+  new_str = _tcsstr(tmp,DOUBLE_DIR);
+  while (NULL != new_str)
   {
 #ifdef _WIN32
     /* On Windows, we have to allow the first two characters to be slashes
@@ -45,13 +45,13 @@ static void remove_double_slash(TCHAR *fn)
     {
 #endif  // ifdef _WIN32
     
-      _tmemmove(new,new+tsize,_tcslen(new));
+      _tmemmove(new_str,new_str+tsize,_tcslen(new_str));
 
 #ifdef _WIN32
     }
 #endif  // ifdef _WIN32
 
-    new = _tcsstr(tmp,DOUBLE_DIR);
+    new_str = _tcsstr(tmp,DOUBLE_DIR);
 
   }
 }
@@ -428,6 +428,35 @@ static int should_hash(state *s, TCHAR *fn)
 
   /* By default we hash anything we can't identify as a "bad thing" */
   return TRUE;
+}
+
+
+#define MAX_STDIN_BUFFER  104857600
+
+int process_stdin(state *s)
+{
+  if (NULL == s)
+    return TRUE;
+
+  char sum[FUZZY_MAX_RESULT];  
+  unsigned char * buffer = (unsigned char *)malloc(sizeof(unsigned char ) * MAX_STDIN_BUFFER);
+  if (NULL == buffer)
+    return TRUE;
+  memset(buffer,0,MAX_STDIN_BUFFER);
+
+  size_t sz = fread(buffer, 1, MAX_STDIN_BUFFER, stdin);
+  int status = fuzzy_hash_buf(buffer, (uint32_t)sz, sum);
+  free(buffer);
+
+  if (status != 0)
+  {
+    print_error_unicode(s,_TEXT("stdin"),"Error processing stdin");
+    return TRUE;
+  }
+
+  display_result(s,_TEXT("stdin"),sum);
+
+  return FALSE;
 }
 
 
