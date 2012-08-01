@@ -2,6 +2,7 @@
 import glob
 import os
 import re
+import stat
 import subprocess
 import sys
 
@@ -29,6 +30,14 @@ class BuildExtension(build_ext.build_ext):
 
     def build_ssdeep(self):
         if len(get_objects()) == 0:
+            try:
+                os.chmod(
+                    "ssdeep/configure",
+                    stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO
+                )
+            except:
+                pass
+
             returncode = subprocess.call(
                 "(cd ssdeep && ./configure && make)",
                 shell=True
