@@ -11,7 +11,7 @@ from setuptools import Extension, setup
 VERSION = re.search("__version__\s*=\s*\"(.*)\"", open('ssdeep.pyx').read(), re.M).group(1)
 
 if sys.version_info.major == 3:
-    CYTHON_OPTS = "-3 -f -o ssdeep.c"
+    CYTHON_OPTS = "-3 -f"
 else:
     CYTHON_OPTS = "-2 -f"
 
@@ -58,6 +58,13 @@ def get_objects():
 
 ssdeep_extension.extra_objects = get_objects()
 
+def read(name):
+    return open(
+        os.path.join(
+            os.path.dirname(__file__),
+            name
+        )
+    ).read()
 
 if __name__ == "__main__":
     setup(
@@ -72,6 +79,7 @@ if __name__ == "__main__":
             "build_ext": BuildExtension
         },
         description="Python wrapper for the ssdeep library",
+        long_description=read("README.rst"),
         ext_modules=[ssdeep_extension],
         name="ssdeep",
         url="http://github.com/DinoTools/python-ssdeep",
