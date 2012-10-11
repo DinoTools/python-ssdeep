@@ -11,7 +11,7 @@ from setuptools import Extension, setup
 
 VERSION = re.search("__version__\s*=\s*\"(.*)\"", open('ssdeep.pyx').read(), re.M).group(1)
 
-if sys.version_info.major == 3:
+if sys.version_info[0] == 3:
     CYTHON_OPTS = "-3 -f"
 else:
     CYTHON_OPTS = "-2 -f"
