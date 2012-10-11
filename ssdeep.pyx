@@ -1,7 +1,7 @@
 """
 A wrapper for the ssdeep lib to generate fuzzy hashes.
 """
-__version__ = "2.9-0.1"
+__version__ = "2.9-0.2"
 __all__  = ["Error", "compare", "hash", "hash_from_file"]
 
 import sys
