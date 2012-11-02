@@ -24,7 +24,7 @@ DEF FUZZY_MAX_RESULT = 116
 class Error(Exception):
     pass
 
-if sys.version_info.major == 2:
+if sys.version_info[0] == 2:
     def compare(char* sig1, char* sig2):
         """
         Compute the match score between two fuzzy hash signatures.
