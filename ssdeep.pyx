@@ -56,7 +56,7 @@ def hash(object buf):
     :param Bytes buf: The data to be fuzzy hashed
     :return: The fuzzy hash as string
     """
-    if sys.version_info.major == 3:
+    if sys.version_info[0] == 3:
         if type(buf) == str:
             buf = buf.encode("utf-8")
 
@@ -65,7 +65,7 @@ def hash(object buf):
     if ret != 0:
         raise Error("fuzzy_hash_buf failed with code %d" % ret)
 
-    if sys.version_info.major == 2:
+    if sys.version_info[0] == 2:
         return str(result)
     else:
         return result.decode("UTF-8")
@@ -79,7 +79,7 @@ def hash_from_file(object filename):
     :param Str filename: Name of the file to be hashed
     :return: The fuzzy hash of the file content
     """
-    if sys.version_info.major == 3:
+    if sys.version_info[0] == 3:
         if type(filename) == str:
             filename = filename.encode("utf-8")
 
@@ -88,7 +88,7 @@ def hash_from_file(object filename):
     if ret != 0:
         raise Error("fuzzy_hash_buf failed with code %d" % ret)
 
-    if sys.version_info.major == 2:
+    if sys.version_info[0] == 2:
         return str(result)
     else:
         return result.decode("UTF-8")
