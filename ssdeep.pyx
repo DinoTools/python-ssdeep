@@ -25,13 +25,6 @@ cdef extern from "fuzzy.h":
     int fuzzy_hash_buf(unsigned char *buf, uint32_t buf_len, char *result)
     int fuzzy_hash_filename(char * filename, char* result)
 
-# from fuzzy.h
-#/// The longest possible length for a fuzzy hash signature (without the filename)
-##define FUZZY_MAX_RESULT    (SPAMSUM_LENGTH + (SPAMSUM_LENGTH/2 + 20))
-#/// Length of an individual fuzzy hash signature component
-##define SPAMSUM_LENGTH 64
-
-DEF FUZZY_MAX_RESULT = 116
 
 class Error(Exception):
     def __init__(self, errno=None):
