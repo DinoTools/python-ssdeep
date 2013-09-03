@@ -2,13 +2,25 @@
 A wrapper for the ssdeep lib to generate fuzzy hashes.
 """
 __version__ = "2.9-0.3"
-__all__  = ["Error", "compare", "hash", "hash_from_file"]
+__all__  = ["Error", "Hash", "compare", "hash", "hash_from_file"]
 
+cimport libc.errno
+import errno
+import os
 import sys
 
 cdef extern from "fuzzy.h":
+    struct fuzzy_state
+    cdef enum:
+        FUZZY_FLAG_ELIMSEQ
+        FUZZY_FLAG_NOTRUNC
+        FUZZY_MAX_RESULT
     ctypedef unsigned int uint32_t
 
+    cdef extern fuzzy_state *fuzzy_new() nogil
+    cdef extern int fuzzy_update(fuzzy_state *, unsigned char *, size_t) nogil
+    cdef extern int fuzzy_digest(fuzzy_state *, char *, unsigned int flags) nogil
+    cdef extern void fuzzy_free(fuzzy_state *) nogil
     int fuzzy_compare(char *sig1, char *sig2)
     int fuzzy_hash_buf(unsigned char *buf, uint32_t buf_len, char *result)
     int fuzzy_hash_filename(char * filename, char* result)
@@ -22,7 +34,54 @@ cdef extern from "fuzzy.h":
 DEF FUZZY_MAX_RESULT = 116
 
 class Error(Exception):
-    pass
+    def __init__(self, errno=None):
+        self.errno = errno
+
+    def __str__(self):
+        return "Error: %s" % os.strerror(self.errno)
+
+    def __repr__(self):
+        try:
+            return "Error(errno.%s)" % errno.errorcode[self.errno]
+        except KeyError:
+            return "Error(%d)" % self.errno
+
+cdef class Hash:
+    cdef fuzzy_state *state
+
+    def __cinit__(self):
+        self.state = fuzzy_new()
+        if self.state == NULL:
+            raise Error(libc.errno.errno)
+
+    def update(self, object buff):
+        if sys.version_info[0] == 3:
+            if type(buff) == str:
+                buff = buff.encode("utf-8")
+
+        if self.state == NULL:
+            raise Error(libc.errno.EINVAL)
+        if fuzzy_update(self.state, buff, len(buff)) != 0:
+            fuzzy_free(self.state)
+            self.state = NULL
+            raise Error(libc.errno.errno)
+
+    def digest(self, elimseq=False, notrunc=False):
+        if self.state == NULL:
+            raise Error(libc.errno.EINVAL)
+        cdef char result[FUZZY_MAX_RESULT]
+        flags = (FUZZY_FLAG_ELIMSEQ if elimseq else 0) | \
+                (FUZZY_FLAG_NOTRUNC if notrunc else 0)
+        if fuzzy_digest(self.state, result, flags) != 0:
+            raise Error(libc.errno.errno)
+
+        if sys.version_info[0] == 2:
+            return str(result)
+        return result.decode("UTF-8")
+
+    def __dealloc__(self):
+        if self.state != NULL:
+            fuzzy_free(self.state)
 
 if sys.version_info[0] == 2:
     def compare(char* sig1, char* sig2):
