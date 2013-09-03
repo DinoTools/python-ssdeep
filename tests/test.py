@@ -5,6 +5,14 @@ import unittest
 import ssdeep
 
 class FunctionTest(unittest.TestCase):
+    def testClassHash(self):
+        obj = ssdeep.Hash()
+        obj.update("Also called fuzzy hashes, Ctph can match inputs that have homologies.")
+        self.assertEqual(
+            obj.digest(),
+            "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C"
+        )
+
     def testComputeHash(self):
         self.assertEqual(
             ssdeep.hash("Also called fuzzy hashes, Ctph can match inputs that have homologies."),
