@@ -2,7 +2,7 @@
 // Copyright (C) 2012 Kyrus
 // Copyright (C) 2006 ManTech International Corporation
 //
-// $Id: helpers.cpp 144 2012-04-24 14:59:33Z jessekornblum $
+// $Id: helpers.cpp 184 2013-07-10 05:24:26Z jessekornblum $
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,6 +24,14 @@
 void try_msg(void)
 {
   fprintf (stderr,"Try `%s -h` for more information.%s", __progname, NEWLINE);
+}
+
+
+bool expanded_path(TCHAR *p)
+{
+  if (_tcsncmp(p,_TEXT("\\\\?\\"),4))
+    return false;
+  return true;
 }
 
 

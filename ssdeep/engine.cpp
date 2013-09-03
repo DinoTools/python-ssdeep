@@ -1,4 +1,4 @@
-// $Id: engine.cpp 163 2012-07-17 19:59:54Z jessekornblum $ 
+// $Id: engine.cpp 184 2013-07-10 05:24:26Z jessekornblum $ 
 
 #include "main.h"
 #include "ssdeep.h"
@@ -64,8 +64,22 @@ int hash_file(state *s, TCHAR *fn)
   char *sum;
   TCHAR *my_filename, *msg;
   FILE *handle;
-  
-  handle = _tfopen(fn,_TEXT("rb"));
+
+#ifdef WIN32  
+  TCHAR expanded_fn[SSDEEP_PATH_MAX];
+  if (not expanded_path(fn)) {
+    _sntprintf(expanded_fn, 
+	       SSDEEP_PATH_MAX,
+	       _TEXT("\\\\?\\%s"), 
+	       fn);
+  } else {
+    _tcsncpy(expanded_fn, fn, SSDEEP_PATH_MAX);
+  }
+  handle = _tfopen(expanded_fn, _TEXT("rb"));
+# else
+  handle = fopen(fn, "rb");
+#endif
+
   if (NULL == handle)
   {
     print_error_unicode(s,fn,"%s", strerror(errno));
