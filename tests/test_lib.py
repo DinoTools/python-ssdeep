@@ -23,6 +23,13 @@ class TestFunctionsFail(object):
                 ""
             )
 
+    def test_hash(self):
+        with pytest.raises(TypeError):
+            ssdeep.hash(None)
+
+        with pytest.raises(TypeError):
+            ssdeep.hash(1234)
+
 
 class TestFunctions(object):
     def test_compare(self):
@@ -44,6 +51,10 @@ class TestFunctions(object):
 
     def test_hash_2(self):
         res = ssdeep.hash("Also called fuzzy hashes, CTPH can match inputs that have homologies.")
+        assert res == "3:AXGBicFlIHBGcL6wCrFQEv:AXGH6xLsr2C"
+
+    def test_hash_3(self):
+        res = ssdeep.hash(b"Also called fuzzy hashes, CTPH can match inputs that have homologies.")
         assert res == "3:AXGBicFlIHBGcL6wCrFQEv:AXGH6xLsr2C"
 
     def test_hash_from_file(self):
