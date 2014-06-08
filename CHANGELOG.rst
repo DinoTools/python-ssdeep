@@ -1,0 +1,18 @@
+Changelog
+=========
+
+2.9-0.2 - 2012-10-11
+~~~~~~~~~~~~~~~~~~~~
+
+* Fixing small bug in setup.py
+
+2.9-0.1 - 2012-08-01
+~~~~~~~~~~~~~~~~~~~~
+
+* Updated ssdeep from 2.5 to 2.9
+* Added Python 3.x support
+
+2.5 - 2010-09-03
+~~~~~~~~~~~~~~~~
+
+* Initial release
