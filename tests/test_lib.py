@@ -17,7 +17,7 @@ class TestFunctionsFail(object):
                 "3:AXGBicFlIHBGcL6wCrFQEv:AXGH6xLsr2C"
             )
 
-        with pytest.raises(ssdeep.BaseError):
+        with pytest.raises(ssdeep.InternalError):
             ssdeep.compare(
                 "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C",
                 ""
