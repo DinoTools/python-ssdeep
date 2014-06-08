@@ -71,6 +71,9 @@ _lib = ffi.verify(
 class BaseError(Exception):
     pass
 
+class InternalError(BaseError):
+    pass
+
 class Error(Exception):
     def __init__(self, errno=None):
         self.errno = errno
@@ -148,8 +151,11 @@ def compare(sig1, sig2):
 def hash(buf):
     buf = buf.encode("utf-8")
     result = ffi.new("char[]", _lib.FUZZY_MAX_RESULT)
-    _lib.fuzzy_hash_buf(buf, len(buf), result)
-    return ffi.string(result).decode("utf-8")
+
+    if _lib.fuzzy_hash_buf(buf, len(buf), result) != 0:
+        raise InternalError("Function returned an unexpected error code")
+
+    return ffi.string(result).decode("ascii")
 
 
 def hash_from_file(filename):
