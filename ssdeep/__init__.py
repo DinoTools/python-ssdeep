@@ -121,7 +121,28 @@ class Hash(object):
 
 
 def compare(sig1, sig2):
-    return _lib.fuzzy_compare(sig1.encode("utf-8"), sig2.encode("utf-8"))
+    if isinstance(sig1, six.text_type):
+        sig1 = sig1.encode("ascii")
+    if isinstance(sig2, six.text_type):
+        sig2 = sig2.encode("ascii")
+
+    if not isinstance(sig1, six.binary_type):
+        raise TypeError(
+            "First argument must be of string, unicode or bytes type not "
+            "'%s'" % type(sig1)
+        )
+
+    if not isinstance(sig2, six.binary_type):
+        raise TypeError(
+            "Second argument must be of string, unicode or bytes type not "
+            "'%r'" % type(sig2)
+        )
+
+    res = _lib.fuzzy_compare(sig1, sig2)
+    if res < 0:
+        raise BaseError("Internal lib error")
+
+    return res
 
 
 def hash(buf):
