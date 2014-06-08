@@ -3,21 +3,8 @@ import pytest
 import ssdeep
 
 
-class TestFunctions(object):
+class TestFunctionsFail(object):
     def test_compare(self):
-        res = ssdeep.compare(
-            "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C",
-            "3:AXGBicFlIHBGcL6wCrFQEv:AXGH6xLsr2C"
-        )
-        assert res == 22
-
-        res = ssdeep.compare(
-            b"3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C",
-            b"3:AXGBicFlIHBGcL6wCrFQEv:AXGH6xLsr2C"
-        )
-        assert res == 22
-
-    def test_compare_fail(self):
         with pytest.raises(TypeError):
             ssdeep.compare(
                 "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C",
@@ -35,6 +22,21 @@ class TestFunctions(object):
                 "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C",
                 ""
             )
+
+
+class TestFunctions(object):
+    def test_compare(self):
+        res = ssdeep.compare(
+            "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C",
+            "3:AXGBicFlIHBGcL6wCrFQEv:AXGH6xLsr2C"
+        )
+        assert res == 22
+
+        res = ssdeep.compare(
+            b"3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C",
+            b"3:AXGBicFlIHBGcL6wCrFQEv:AXGH6xLsr2C"
+        )
+        assert res == 22
 
     def test_hash_1(self):
         res = ssdeep.hash("Also called fuzzy hashes, Ctph can match inputs that have homologies.")
