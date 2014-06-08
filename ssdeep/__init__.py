@@ -68,6 +68,9 @@ _lib = ffi.verify(
 )
 
 
+class BaseError(Exception):
+    pass
+
 class Error(Exception):
     def __init__(self, errno=None):
         self.errno = errno
@@ -129,6 +132,15 @@ def hash(buf):
 
 
 def hash_from_file(filename):
+    if not os.path.exists(filename):
+        raise IOError("Path not found")
+    if not os.path.isfile(filename):
+        raise IOError("File not found")
+    if not os.access(filename, os.R_OK):
+        raise IOError("File is not readable")
+
     result = ffi.new("char[]", _lib.FUZZY_MAX_RESULT)
-    _lib.fuzzy_hash_filename(filename.encode("utf-8"), result)
+    if _lib.fuzzy_hash_filename(filename.encode("utf-8"), result) != 0:
+        raise BaseError()
+
     return ffi.string(result).decode("utf-8")
