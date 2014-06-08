@@ -1,6 +1,20 @@
 Changelog
 =========
 
+3.0 - `master`_
+~~~~~~~~~~~~~~~
+
+.. note:: This version is not yet released and is under development.
+
+* Complete rewrite to use CFFI
+* Interface in the spirit of hashlib
+* Use pytest and tox for tests
+
+2.9-0.3 - 2013-03-12
+~~~~~~~~~~~~~~~~~~~~
+
+* Fix build issue with Python 2.6
+
 2.9-0.2 - 2012-10-11
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -16,3 +30,5 @@ Changelog
 ~~~~~~~~~~~~~~~~
 
 * Initial release
+
+.. _`master`: https://github.com/DinoTools/python-ssdeep
