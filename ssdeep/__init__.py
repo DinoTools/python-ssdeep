@@ -148,10 +148,18 @@ def compare(sig1, sig2):
     return res
 
 
-def hash(buf):
-    buf = buf.encode("utf-8")
-    result = ffi.new("char[]", _lib.FUZZY_MAX_RESULT)
+def hash(buf, encoding="utf-8"):
+    if isinstance(buf, six.text_type):
+        buf = buf.encode(encoding)
 
+    if not isinstance(buf, six.binary_type):
+        raise TypeError(
+            "Argument must be of string, unicode or bytes type not "
+            "'%r'" % type(buf)
+        )
+
+    # allocate memory for result
+    result = ffi.new("char[]", _lib.FUZZY_MAX_RESULT)
     if _lib.fuzzy_hash_buf(buf, len(buf), result) != 0:
         raise InternalError("Function returned an unexpected error code")
 
