@@ -1,96 +1,105 @@
 #!/usr/bin/env python
-import glob
 import os
-import re
-import stat
-import subprocess
-import sys
+from distutils.command.build import build
+from setuptools import setup, find_packages
+from setuptools.command.install import install
 
-from distutils.command import build_ext
-from setuptools import Extension, setup
+base_dir = os.path.dirname(__file__)
 
-VERSION = re.search("__version__\s*=\s*\"(.*)\"", open('ssdeep.pyx').read(), re.M).group(1)
 
-if sys.version_info[0] == 3:
-    CYTHON_OPTS = "-3 -f"
-else:
-    CYTHON_OPTS = "-2 -f"
+class CFFIBuild(build):
+    def finalize_options(self):
+        self.distribution.ext_modules = get_ext_modules()
+        build.finalize_options(self)
 
-ssdeep_extension = Extension(
-    include_dirs=["ssdeep"],
-    name="ssdeep",
-    sources=["ssdeep.c"]
+
+class CFFIInstall(install):
+    def finalize_options(self):
+        self.distribution.ext_modules = get_ext_modules()
+        install.finalize_options(self)
+
+
+def get_ext_modules():
+    import ssdeep
+    ext_modules = [
+        ssdeep.ffi.verifier.get_extension()
+    ]
+    return ext_modules
+
+about = {}
+with open(os.path.join(base_dir, "ssdeep", "__about__.py")) as f:
+    exec(f.read(), about)
+
+with open(os.path.join(base_dir, "README.rst")) as f:
+    long_description = f.read()
+
+setup(
+    name=about["__title__"],
+    version=about["__version__"],
+
+    description=about["__summary__"],
+    long_description=long_description,
+    license=about["__license__"],
+    url=about["__uri__"],
+
+    zip_safe=False,
+    author=about["__author__"],
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.2",
+        "Programming Language :: Python :: 3.3",
+        "Programming Language :: Python :: 3.4",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+    ],
+    install_requires=[
+        # ToDo: set min version
+        "cffi",
+        "six >= 1.4.1"
+    ],
+    setup_requires=[
+        # ToDo: set min version
+        "cffi",
+        "six >= 1.4.1"
+    ],
+    packages=find_packages(exclude=["*.tests", "*.tests.*"]),
+    include_package_data=True,
+    cmdclass={
+        "build": CFFIBuild,
+        "install": CFFIInstall,
+    },
+    ext_package="ssdeep",
 )
 
-class BuildExtension(build_ext.build_ext):
-    def build_extension(self, ext):
-        self.compile_cython()
-        self.build_ssdeep()
-        return build_ext.build_ext.build_extension(self, ext)
-
-    def build_ssdeep(self):
-        if len(get_objects()) == 0:
-            try:
-                os.chmod(
-                    "ssdeep/configure",
-                    stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO
-                )
-            except:
-                pass
-
-            returncode = subprocess.call(
-                "(cd ssdeep && ./configure && make)",
-                shell=True
-            )
-            if returncode != 0:
-                sys.exit("Failed while running ./configure and make")
-
-        ssdeep_extension.extra_objects = get_objects()
-        if len(ssdeep_extension.extra_objects) == 0:
-            sys.exit("Can't build ssdeep. No objects found.")
-
-    def compile_cython(self):
-        returncode = subprocess.call(
-            "cython %s ssdeep.pyx" % CYTHON_OPTS,
-            shell=True
-        )
-        if returncode != 0:
-            sys.exit("Error running cython")
-
-
-def get_objects():
-    objects = glob.glob("ssdeep/.libs/*.o")
-    if len(objects) > 0:
-        return objects
-    return glob.glob("ssdeep/.libs/*.obj")
-
-
-ssdeep_extension.extra_objects = get_objects()
-
-def read(name):
-    return open(
-        os.path.join(
-            os.path.dirname(__file__),
-            name
-        )
-    ).read()
-
-if __name__ == "__main__":
-    setup(
-        author="Philipp Seidel",
-        author_email="",
-        classifiers=[
-            "Topic :: Software Development :: Libraries :: Python Modules",
-            "Intended Audience :: Developers",
-            "Development Status :: 4 - Beta"
-        ],
-        cmdclass={
-            "build_ext": BuildExtension
-        },
-        description="Python wrapper for the ssdeep library",
-        long_description=read("README.rst"),
-        ext_modules=[ssdeep_extension],
-        name="ssdeep",
-        url="http://github.com/DinoTools/python-ssdeep",
-        version=VERSION
-    )
+# ToDo: build and include ssdeep lib?
+# import glob
+# import os
+# import subprocess
+#
+# def build_ssdeep():
+#     try:
+#         os.chmod(
+#             "ssdeep/configure",
+#             stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO
+#         )
+#     except:
+#         pass
+#
+#     returncode = subprocess.call(
+#         "(cd ssdeep && ./configure && make)",
+#         shell=True
+#     )
+#     if returncode != 0:
+#         sys.exit("Failed while running ./configure and make")
+#
+# def get_objects():
+#     objects = glob.glob("ssdeep/.libs/*.o")
+#     if len(objects) > 0:
+#         return objects
+#     return glob.glob("ssdeep/.libs/*.obj")
