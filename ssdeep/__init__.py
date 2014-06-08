@@ -91,35 +91,41 @@ class Error(Exception):
 class Hash(object):
     def __init__(self):
         self._state = _lib.fuzzy_new()
-#        if self.state == NULL:
-#            raise Error(libc.errno.errno)
+        if self._state == ffi.NULL:
+            raise InternalError("Unable to create state object")
 
-    def update(self, buf):
-        buf = buf.encode("utf-8")
+    def update(self, buf, encoding="utf-8"):
+        if self._state == ffi.NULL:
+            raise InternalError("State object is NULL")
 
-#        if self._state == N:
-#           raise Error(libc.errno.EINVAL)
+        if isinstance(buf, six.text_type):
+            buf = buf.encode(encoding)
+
+        if not isinstance(buf, six.binary_type):
+            raise TypeError(
+                "Argument must be of string, unicode or bytes type not "
+                "'%r'" % type(buf)
+            )
+
         if _lib.fuzzy_update(self._state, buf, len(buf)) != 0:
             _lib.fuzzy_free(self._state)
-            self._state = None
-            # raise Error(libc.errno.errno)
+            raise InternalError("Invalid state object")
 
     def digest(self, elimseq=False, notrunc=False):
-        # if self.state == NULL:
-        #    raise Error(libc.errno.EINVAL)
+        if self._state == ffi.NULL:
+            raise InternalError("State object is NULL")
 
         flags = (_lib.FUZZY_FLAG_ELIMSEQ if elimseq else 0) | \
                 (_lib.FUZZY_FLAG_NOTRUNC if notrunc else 0)
 
         result = ffi.new("char[]", _lib.FUZZY_MAX_RESULT)
         if _lib.fuzzy_digest(self._state, result, flags) != 0:
-            # raise Error(libc.errno.errno)
-            pass
+            raise InternalError("Function returned an unexpected error code")
 
-        return ffi.string(result).decode("utf-8")
+        return ffi.string(result).decode("ascii")
 
     def __del__(self):
-        if self._state is not None:
+        if self._state != ffi.NULL:
             _lib.fuzzy_free(self._state)
 
 
