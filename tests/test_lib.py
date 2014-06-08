@@ -75,3 +75,15 @@ class TestHashClass(object):
         res = obj.digest()
 
         assert res == "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C"
+
+
+class TestHashClassFail(object):
+    def test_update_01(self):
+        obj = ssdeep.Hash()
+        with pytest.raises(TypeError):
+            obj.update(None)
+
+    def test_update_02(self):
+        obj = ssdeep.Hash()
+        with pytest.raises(TypeError):
+            obj.update(1234)
