@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import pytest
 import ssdeep
 
 
@@ -19,6 +20,12 @@ class TestFunctions(object):
         assert res == "3:AXGBicFlIHBGcL6wCrFQEv:AXGH6xLsr2C"
 
     def test_hash_from_file(self):
+        with pytest.raises(IOError):
+            ssdeep.hash_from_file("tests/files/")
+
+        with pytest.raises(IOError):
+            ssdeep.hash_from_file("tests/files/file-does-not-exist.txt")
+
         res = ssdeep.hash_from_file("tests/files/file.txt")
         assert res == "3:AXGBicFlgVNhBGcL6wCrFQE3:AXGHsNhxLsr2s"
 
