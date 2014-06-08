@@ -143,7 +143,7 @@ def compare(sig1, sig2):
 
     res = _lib.fuzzy_compare(sig1, sig2)
     if res < 0:
-        raise BaseError("Internal lib error")
+        raise InternalError("Function returned an unexpected error code")
 
     return res
 
@@ -176,6 +176,6 @@ def hash_from_file(filename):
 
     result = ffi.new("char[]", _lib.FUZZY_MAX_RESULT)
     if _lib.fuzzy_hash_filename(filename.encode("utf-8"), result) != 0:
-        raise BaseError()
+        raise InternalError("Function returned an unexpected error code")
 
-    return ffi.string(result).decode("utf-8")
+    return ffi.string(result).decode("ascii")
