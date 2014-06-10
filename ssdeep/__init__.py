@@ -1,71 +1,15 @@
 import os
 
 import six
-from cffi import FFI
 
 from ssdeep.__about__ import (
     __author__, __copyright__, __email__, __license__, __summary__, __title__,
     __uri__, __version__
 )
+from ssdeep.binding import Binding
 
-ffi = FFI()
-
-ffi.cdef(
-    """
-    static const long FUZZY_FLAG_ELIMSEQ;
-    static const long FUZZY_FLAG_NOTRUNC;
-    static const long FUZZY_MAX_RESULT;
-
-    struct fuzzy_state;
-    struct fuzzy_state *fuzzy_new(void);
-    int fuzzy_update(
-        struct fuzzy_state *,
-        const unsigned char *,
-        size_t
-    );
-
-    int fuzzy_digest(
-        const struct fuzzy_state *,
-        char *,
-        unsigned int
-    );
-    void fuzzy_free(struct fuzzy_state *);
-
-    int fuzzy_hash_buf(
-        const unsigned char *,
-        uint32_t,
-        char *
-    );
-
-    int fuzzy_hash_file(
-        FILE *,
-        char *
-    );
-
-    int fuzzy_hash_stream(
-        FILE *,
-        char *
-    );
-
-    int fuzzy_hash_filename(
-        const char *,
-        char *
-    );
-
-    int fuzzy_compare(
-        const char *,
-        const char *
-    );
-    """
-)
-
-_lib = ffi.verify(
-    """
-    #include "fuzzy.h"
-    """,
-    ext_package="ssdeep",
-    libraries=["fuzzy"],
-)
+binding = Binding()
+ffi = binding.ffi
 
 
 class BaseError(Exception):
@@ -90,7 +34,7 @@ class Error(Exception):
 
 class Hash(object):
     def __init__(self):
-        self._state = _lib.fuzzy_new()
+        self._state = binding.lib.fuzzy_new()
         if self._state == ffi.NULL:
             raise InternalError("Unable to create state object")
 
@@ -107,26 +51,26 @@ class Hash(object):
                 "'%r'" % type(buf)
             )
 
-        if _lib.fuzzy_update(self._state, buf, len(buf)) != 0:
-            _lib.fuzzy_free(self._state)
+        if binding.lib.fuzzy_update(self._state, buf, len(buf)) != 0:
+            binding.lib.fuzzy_free(self._state)
             raise InternalError("Invalid state object")
 
     def digest(self, elimseq=False, notrunc=False):
         if self._state == ffi.NULL:
             raise InternalError("State object is NULL")
 
-        flags = (_lib.FUZZY_FLAG_ELIMSEQ if elimseq else 0) | \
-                (_lib.FUZZY_FLAG_NOTRUNC if notrunc else 0)
+        flags = (binding.lib.FUZZY_FLAG_ELIMSEQ if elimseq else 0) | \
+                (binding.lib.FUZZY_FLAG_NOTRUNC if notrunc else 0)
 
-        result = ffi.new("char[]", _lib.FUZZY_MAX_RESULT)
-        if _lib.fuzzy_digest(self._state, result, flags) != 0:
+        result = ffi.new("char[]", binding.lib.FUZZY_MAX_RESULT)
+        if binding.lib.fuzzy_digest(self._state, result, flags) != 0:
             raise InternalError("Function returned an unexpected error code")
 
         return ffi.string(result).decode("ascii")
 
     def __del__(self):
         if self._state != ffi.NULL:
-            _lib.fuzzy_free(self._state)
+            binding.lib.fuzzy_free(self._state)
 
 
 def compare(sig1, sig2):
@@ -147,7 +91,7 @@ def compare(sig1, sig2):
             "'%r'" % type(sig2)
         )
 
-    res = _lib.fuzzy_compare(sig1, sig2)
+    res = binding.lib.fuzzy_compare(sig1, sig2)
     if res < 0:
         raise InternalError("Function returned an unexpected error code")
 
@@ -165,8 +109,8 @@ def hash(buf, encoding="utf-8"):
         )
 
     # allocate memory for result
-    result = ffi.new("char[]", _lib.FUZZY_MAX_RESULT)
-    if _lib.fuzzy_hash_buf(buf, len(buf), result) != 0:
+    result = ffi.new("char[]", binding.lib.FUZZY_MAX_RESULT)
+    if binding.lib.fuzzy_hash_buf(buf, len(buf), result) != 0:
         raise InternalError("Function returned an unexpected error code")
 
     return ffi.string(result).decode("ascii")
@@ -180,8 +124,8 @@ def hash_from_file(filename):
     if not os.access(filename, os.R_OK):
         raise IOError("File is not readable")
 
-    result = ffi.new("char[]", _lib.FUZZY_MAX_RESULT)
-    if _lib.fuzzy_hash_filename(filename.encode("utf-8"), result) != 0:
+    result = ffi.new("char[]", binding.lib.FUZZY_MAX_RESULT)
+    if binding.lib.fuzzy_hash_filename(filename.encode("utf-8"), result) != 0:
         raise InternalError("Function returned an unexpected error code")
 
     return ffi.string(result).decode("ascii")
