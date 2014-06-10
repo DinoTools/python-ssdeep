@@ -1,10 +1,17 @@
 #!/usr/bin/env python
+import glob
 import os
+import stat
+import subprocess
+import sys
 from distutils.command.build import build
 from setuptools import setup, find_packages
 from setuptools.command.install import install
 
 base_dir = os.path.dirname(__file__)
+use_system_lib = False
+if os.environ.get("USE_SYSTEM_LIB") == "1":
+    use_system_lib = True
 
 
 class CFFIBuild(build):
@@ -19,12 +26,46 @@ class CFFIInstall(install):
         install.finalize_options(self)
 
 
+def build_ssdeep():
+    try:
+        os.chmod(
+            "ssdeep-lib/configure",
+            stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO
+        )
+    except:
+        pass
+
+    returncode = subprocess.call(
+        "(cd ssdeep-lib && ./configure && make)",
+        shell=True
+    )
+    if returncode != 0:
+        sys.exit("Failed while running ./configure and make")
+
+
 def get_ext_modules():
-    import ssdeep
+    from ssdeep.binding import Binding
+    if use_system_lib:
+        binding = Binding()
+    else:
+        build_ssdeep()
+        binding = Binding(
+            extra_objects=get_objects(),
+            include_dirs=["./ssdeep-lib/"],
+            libraries=[]
+        )
+    binding.verify()
     ext_modules = [
-        ssdeep.ffi.verifier.get_extension()
+        binding.ffi.verifier.get_extension()
     ]
     return ext_modules
+
+
+def get_objects():
+    objects = glob.glob("ssdeep-lib/.libs/*.o")
+    if len(objects) > 0:
+        return objects
+    return glob.glob("ssdeep-lib/.libs/*.obj")
 
 about = {}
 with open(os.path.join(base_dir, "ssdeep", "__about__.py")) as f:
@@ -76,30 +117,3 @@ setup(
     },
     ext_package="ssdeep",
 )
-
-# ToDo: build and include ssdeep lib?
-# import glob
-# import os
-# import subprocess
-#
-# def build_ssdeep():
-#     try:
-#         os.chmod(
-#             "ssdeep/configure",
-#             stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO
-#         )
-#     except:
-#         pass
-#
-#     returncode = subprocess.call(
-#         "(cd ssdeep && ./configure && make)",
-#         shell=True
-#     )
-#     if returncode != 0:
-#         sys.exit("Failed while running ./configure and make")
-#
-# def get_objects():
-#     objects = glob.glob("ssdeep/.libs/*.o")
-#     if len(objects) > 0:
-#         return objects
-#     return glob.glob("ssdeep/.libs/*.obj")
