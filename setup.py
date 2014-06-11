@@ -36,11 +36,21 @@ def build_ssdeep():
         pass
 
     returncode = subprocess.call(
-        "(cd ssdeep-lib && autoreconf && ./configure && make)",
+        "(cd ssdeep-lib && ./configure && make)",
+        shell=True
+    )
+    if returncode == 0:
+        return
+
+    print("Failed while building ssdeep lib with configure and make.")
+    print("Retry with autoreconf ...")
+
+    returncode = subprocess.call(
+        "(cd ssdeep-lib && autoreconf --force && ./configure && make)",
         shell=True
     )
     if returncode != 0:
-        sys.exit("Failed while build ssdeep lib.")
+        sys.exit("Failed while building ssdeep lib.")
 
 
 def get_ext_modules():
