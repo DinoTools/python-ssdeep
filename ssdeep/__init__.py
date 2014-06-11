@@ -1,3 +1,8 @@
+"""
+This is a straightforward Python wrapper for ssdeep by Jesse Kornblum,
+which is a library for computing Context Triggered Piecewise Hashes (CTPH).
+"""
+
 import os
 
 import six
@@ -13,12 +18,19 @@ ffi = binding.ffi
 
 
 class BaseError(Exception):
+    """The base for all other Exceptions"""
     pass
+
 
 class InternalError(BaseError):
+    """Raised if lib returns internal error"""
     pass
 
+
 class Error(Exception):
+    """
+    Deprecated. Will be removed.
+    """
     def __init__(self, errno=None):
         self.errno = errno
 
@@ -33,12 +45,27 @@ class Error(Exception):
 
 
 class Hash(object):
+    """
+    Hashlib like object.
+
+    :raises InternalError: If lib returns internal error
+    """
     def __init__(self):
         self._state = binding.lib.fuzzy_new()
         if self._state == ffi.NULL:
             raise InternalError("Unable to create state object")
 
     def update(self, buf, encoding="utf-8"):
+        """
+         Feed the data contained in the given buffer to the state.
+
+        :param String|Byte buf: The data to be hashed
+        :param String encoding: Encoding is used if buf is String
+        :raises InternalError: If lib returns an internal error
+        :raises TypeError: If buf is not Bytes, String or Unicode
+
+        """
+
         if self._state == ffi.NULL:
             raise InternalError("State object is NULL")
 
@@ -56,6 +83,18 @@ class Hash(object):
             raise InternalError("Invalid state object")
 
     def digest(self, elimseq=False, notrunc=False):
+        """
+        Obtain the fuzzy hash.
+
+        This operation does not change the state at all. It reports the hash
+        for the concatenation of the data previously fed using update().
+
+        :return: The fuzzy hash
+        :rtype: String
+        :raises InternalError: If lib returns an internal error
+
+        """
+
         if self._state == ffi.NULL:
             raise InternalError("State object is NULL")
 
@@ -74,6 +113,22 @@ class Hash(object):
 
 
 def compare(sig1, sig2):
+    """
+    Computes the match score between two fuzzy hash signatures.
+
+    Returns a value from zero to 100 indicating the match score of the
+    two signatures. A match score of zero indicates the signatures
+    did not match.
+
+    :param Bytes|String sig1: First fuzzy hash signature
+    :param Bytes|String sig2: Second fuzzy hash signature
+    :return: Match score (0-100)
+    :rtype: Integer
+    :raises InternalError: If lib returns an internal error
+    :raises TypeError: If sig is not String, Unicode or Bytes
+
+    """
+
     if isinstance(sig1, six.text_type):
         sig1 = sig1.encode("ascii")
     if isinstance(sig2, six.text_type):
@@ -99,6 +154,17 @@ def compare(sig1, sig2):
 
 
 def hash(buf, encoding="utf-8"):
+    """
+    Compute the fuzzy hash of a buffer
+
+    :param String|Bytes buf: The data to be fuzzy hashed
+    :return: The fuzzy hash
+    :rtype: String
+    :raises InternalError: If lib returns an internal error
+    :raises TypeError: If buf is not String or Bytes
+
+    """
+
     if isinstance(buf, six.text_type):
         buf = buf.encode(encoding)
 
@@ -117,6 +183,19 @@ def hash(buf, encoding="utf-8"):
 
 
 def hash_from_file(filename):
+    """
+    Compute the fuzzy hash of a file.
+
+    Opens, reads, and hashes the contents of the file 'filename'
+
+    :param String|Bytes filename: The name of the file to be hashed
+    :return: The fuzzy hash of the file
+    :rtype: String
+    :raises IOError: If Python is unable to read the file
+    :raises InternalError: If lib returns an internal error
+
+    """
+
     if not os.path.exists(filename):
         raise IOError("Path not found")
     if not os.path.isfile(filename):
