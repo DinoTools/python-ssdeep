@@ -9,9 +9,9 @@ from setuptools import setup, find_packages
 from setuptools.command.install import install
 
 base_dir = os.path.dirname(__file__)
-use_system_lib = False
-if os.environ.get("USE_SYSTEM_LIB") == "1":
-    use_system_lib = True
+use_system_lib = True
+if os.environ.get("BUILD_LIB") == "1":
+    use_system_lib = False
 
 
 class CFFIBuild(build):
