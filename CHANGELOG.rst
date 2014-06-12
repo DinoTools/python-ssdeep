@@ -9,6 +9,7 @@ Changelog
 * Complete rewrite to use CFFI
 * Interface in the spirit of hashlib
 * Use pytest and tox for tests
+* Use installed fuzzy lib by default
 
 2.9-0.3 - 2013-03-12
 ~~~~~~~~~~~~~~~~~~~~
