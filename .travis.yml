@@ -7,10 +7,7 @@ python:
   - "3.3"
   - "3.4"
 
-before_install:
-  - sudo apt-get install libfuzzy2 libfuzzy-dev
-
 install:
-  - "pip install ."
+  - BUILD_LIB=1 pip install .
 
 script: py.test
