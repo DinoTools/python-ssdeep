@@ -7,7 +7,7 @@ python:
   - "3.3"
   - "3.4"
 
-before_script:
+before_install:
   - sudo apt-get install libfuzzy2 libfuzzy-dev
 
 install:
