@@ -77,6 +77,16 @@ class TestHashClass(object):
         assert res == "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C"
 
 
+class TestPseudoHashClass(object):
+    def test_update(self):
+        obj = ssdeep.PseudoHash()
+        obj.update("Also called fuzzy hashes, ")
+        obj.update("Ctph can match inputs that have homologies.")
+        res = obj.digest()
+
+        assert res == "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C"
+
+
 class TestHashClassFail(object):
     def test_update_01(self):
         obj = ssdeep.Hash()
