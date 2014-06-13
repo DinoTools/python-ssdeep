@@ -1,6 +1,14 @@
 Installation
 ============
 
+Requirements
+------------
+
+* Python 2.6, 2.7 or Python >= 3.2
+* ssdeep/libfuzzy >= 2.10 (Some features might not be available with older versions. See :py:class:`ssdeep.Hash`)
+* cffi
+* six
+
 Building python-ssdeep on Linux
 -------------------------------
 
