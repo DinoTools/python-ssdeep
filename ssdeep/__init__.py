@@ -29,11 +29,15 @@ class InternalError(BaseError):
 
 class Hash(object):
     """
-    Hashlib like object.
+    Hashlib like object. It is only supported with ssdeep/libfuzzy >= 2.10.
 
     :raises InternalError: If lib returns internal error
+    :raises NotImplementedError: Required functions are not available
     """
     def __init__(self):
+        if not hasattr(binding.lib, "fuzzy_new"):
+            raise NotImplementedError("Only supported with ssdeep >= 2.10")
+
         self._state = binding.lib.fuzzy_new()
         if self._state == ffi.NULL:
             raise InternalError("Unable to create state object")
@@ -93,6 +97,52 @@ class Hash(object):
     def __del__(self):
         if self._state != ffi.NULL:
             binding.lib.fuzzy_free(self._state)
+
+
+class PseudoHash(object):
+    """
+    Hashlib like object. Use this class only if Hash() isn't supported by your
+    ssdeep/libfuzzy library. This class stores the provided data in memory, so
+    be careful when hashing large files.
+
+    """
+    def __init__(self):
+        self._data = b""
+
+    def update(self, buf, encoding="utf-8"):
+        """
+         Feed the data contained in the given buffer to the state.
+
+        :param String|Byte buf: The data to be hashed
+        :param String encoding: Encoding is used if buf is String
+        :raises TypeError: If buf is not Bytes, String or Unicode
+
+        """
+
+        if isinstance(buf, six.text_type):
+            buf = buf.encode(encoding)
+
+        if not isinstance(buf, six.binary_type):
+            raise TypeError(
+                "Argument must be of string, unicode or bytes type not "
+                "'%r'" % type(buf)
+            )
+
+        self._data = self._data + buf
+
+    def digest(self, elimseq=False, notrunc=False):
+        """
+        Obtain the fuzzy hash.
+
+        This operation does not change the state at all. It reports the hash
+        for the concatenation of the data previously fed using update().
+
+        :return: The fuzzy hash
+        :rtype: String
+
+        """
+
+        return hash(self._data)
 
 
 def compare(sig1, sig2):
