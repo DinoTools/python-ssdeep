@@ -27,23 +27,6 @@ class InternalError(BaseError):
     pass
 
 
-class Error(Exception):
-    """
-    Deprecated. Will be removed.
-    """
-    def __init__(self, errno=None):
-        self.errno = errno
-
-    def __str__(self):
-        return "Error: %s" % os.strerror(self.errno)
-
-    def __repr__(self):
-        try:
-            return "Error(errno.%s)" % errno.errorcode[self.errno]
-        except KeyError:
-            return "Error(%d)" % self.errno
-
-
 class Hash(object):
     """
     Hashlib like object.
