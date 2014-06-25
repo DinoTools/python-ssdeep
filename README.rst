@@ -10,6 +10,10 @@ content and length.
     :target: https://pypi.python.org/pypi/ssdeep/
     :alt: Latest Version
 
+.. image:: https://pypip.in/license/ssdeep/badge.svg
+    :target: https://pypi.python.org/pypi/ssdeep/
+    :alt: License
+
 .. image:: https://travis-ci.org/DinoTools/python-ssdeep.svg?branch=master
     :target: https://travis-ci.org/DinoTools/python-ssdeep
 
