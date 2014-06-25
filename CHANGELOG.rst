@@ -1,12 +1,16 @@
 Changelog
 =========
 
-3.0 - `master`_
-~~~~~~~~~~~~~~~
+3.x - `master`_
+~~~~~~~~~~~~~~~~
 
 .. note:: This version is not yet released and is under development.
 
-* Complete rewrite to use CFFI
+
+3.0 - 2014-06-25
+~~~~~~~~~~~~~~~~
+
+* Completely rewritten to use CFFI
 * Interface in the spirit of hashlib
 * Use pytest and tox for tests
 * Use installed fuzzy lib by default
