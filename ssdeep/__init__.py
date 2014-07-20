@@ -35,6 +35,8 @@ class Hash(object):
     :raises NotImplementedError: Required functions are not available
     """
     def __init__(self):
+        self._state = ffi.NULL
+
         if not hasattr(binding.lib, "fuzzy_new"):
             raise NotImplementedError("Only supported with ssdeep >= 2.10")
 
