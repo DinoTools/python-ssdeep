@@ -49,11 +49,55 @@ cdef = """
         const char *,
         const char *
     );
+
+    static const long ssdeep_HAS_STATEFUL_HASHING;
 """
 
 source = """
     #include "fuzzy.h"
+
+    #ifndef FUZZY_FLAG_ELIMSEQ
+    static const long ssdeep_HAS_STATEFUL_HASHING = 0;
+
+    struct fuzzy_state {};
+    const long FUZZY_FLAG_ELIMSEQ = 0;
+    const long FUZZY_FLAG_NOTRUNC = 0;
+    int (*fuzzy_digest)(
+        const struct fuzzy_state *,
+        char *,
+        unsigned int
+    ) = NULL;
+    int (*fuzzy_free)(struct fuzzy_state *) = NULL;
+    int (*fuzzy_new)(void) = NULL;
+    int (*fuzzy_update)(
+        struct fuzzy_state *,
+        const unsigned char *,
+        size_t
+    ) = NULL;
+
+    int (*fuzzy_hash_stream)(
+        FILE *,
+        char *
+    ) = NULL;
+
+    #else
+
+    static const long ssdeep_HAS_STATEFUL_HASHING = 1;
+
+    #endif
 """
+
+CONDITIONAL_NAMES = {
+    "ssdeep_HAS_STATEFUL_HASHING": (
+        "FUZZY_FLAG_ELIMSEQ",
+        "FUZZY_FLAG_NOTRUNC",
+        "fuzzy_digest",
+        "fuzzy_free",
+        "fuzzy_new",
+        "fuzzy_update",
+        "fuzzy_hash_stream"
+    )
+}
 
 
 class Binding(object):
@@ -80,6 +124,12 @@ class Binding(object):
             modulename=_create_modulename(cdef, source, __version__),
             libraries=self._libraries,
         )
+
+        for condition, names in CONDITIONAL_NAMES.items():
+            if getattr(self._lib, condition):
+                continue
+            for name in names:
+                delattr(self._lib, name)
 
     @property
     def lib(self):
