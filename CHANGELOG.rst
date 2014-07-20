@@ -1,11 +1,12 @@
 Changelog
 =========
 
-3.x - `master`_
+3.1 - `master`_
 ~~~~~~~~~~~~~~~~
 
 .. note:: This version is not yet released and is under development.
 
+* Fix build issue with ssdeep < 2.10
 
 3.0 - 2014-06-25
 ~~~~~~~~~~~~~~~~
