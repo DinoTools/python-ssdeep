@@ -1,7 +1,7 @@
 # Maintainer: PhiBo <phibo at dinotools dot org>
 
 pkgname=python-ssdeep
-pkgver=3.0
+pkgver=3.1
 pkgrel=1
 pkgdesc='Python wrapper for ssdeep fuzzy hashing library'
 arch=('i686' 'x86_64')
@@ -11,7 +11,7 @@ makedepends=('python-setuptools' 'python-six' 'python-cffi' 'ssdeep')
 depends=('python' 'python-six' 'python-cffi' 'ssdeep')
 checkdepends=('python-pytest')
 source=("https://pypi.python.org/packages/source/s/ssdeep/ssdeep-${pkgver}.tar.gz")
-md5sums=('cabd8d06fe67f7796df193ef15a68859')
+md5sums=('645ecb3fecb6c490938ae4b1c5d3e2ea')
 
 build() {
    cd ssdeep-${pkgver}
