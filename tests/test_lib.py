@@ -97,3 +97,15 @@ class TestHashClassFail(object):
         obj = ssdeep.Hash()
         with pytest.raises(TypeError):
             obj.update(1234)
+
+
+class TestPseudoHashClassFail(object):
+    def test_update_01(self):
+        obj = ssdeep.PseudoHash()
+        with pytest.raises(TypeError):
+            obj.update(None)
+
+    def test_update_02(self):
+        obj = ssdeep.PseudoHash()
+        with pytest.raises(TypeError):
+            obj.update(1234)
