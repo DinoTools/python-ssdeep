@@ -6,6 +6,12 @@ Changelog
 
 .. note:: This version is not yet released and is under development.
 
+3.1.1 - 2014-11-xx
+~~~~~~~~~~~~~~~~~~
+
+* Update ssdeep lib to 2.12
+* Add additional tests
+
 3.1 - 2014-08-07
 ~~~~~~~~~~~~~~~~
 
