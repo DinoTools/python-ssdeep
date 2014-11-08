@@ -4,11 +4,13 @@
 /// @file filedata.h
 // Copyright (C) 2012 Kyrus. See COPYING for details
 
-// $Id: filedata.h 160 2012-07-17 01:00:07Z jessekornblum $
+// $Id: filedata.h 214 2014-09-09 23:31:07Z jessekornblum $
 
 #include <set>
 #include <string>
 #include <iostream>
+#include <stdlib.h>
+#include <assert.h>
 #include "tchar-local.h"
 
 /// Contains a fuzzy hash and associated metadata for file
@@ -25,9 +27,9 @@ class Filedata
   /// Creates a new Filedata object with the given filename and signature
   ///
   /// If sig is not valid, throws std::bad_alloc
-  Filedata(const std::string sig, const char * match_file = NULL);
+  Filedata(const std::string& sig, const char * match_file = NULL);
 
-  /// Returns the file's fuzzy hash without a filename. 
+  /// Returns the file's fuzzy hash without a filename.
   /// std::string("[blocksize]:[sig1]:[sig2]")
   std::string get_signature(void) const { return m_signature; }
 
@@ -47,7 +49,11 @@ class Filedata
   std::set<Filedata* >* get_cluster(void) const { return m_cluster; }
   void clear_cluster(void);
 
+  ~Filedata() { if (m_filename) { free(m_filename); } }
+
  private:
+  Filedata(const Filedata &other) { assert(false); /* never copy */ }
+
   std::set<Filedata *> * m_cluster;
 
   /// Original signature in the form [blocksize]:[sig1]:[sig2]

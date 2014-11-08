@@ -1,7 +1,7 @@
 // ssdeep
 // (C) Copyright 2012 Kyrus
 //
-// $Id: match.cpp 164 2012-07-23 16:12:36Z jessekornblum $
+// $Id: match.cpp 211 2014-05-14 18:20:23Z jessekornblum $
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -353,8 +353,7 @@ bool find_matches_in_known(state *s)
 }
 
 
-bool match_add(state *s, Filedata * f)
-{
+bool match_add(state *s, Filedata * f) {
   if (NULL == s)
     return true;
 
@@ -364,27 +363,23 @@ bool match_add(state *s, Filedata * f)
 }
 
 
-bool match_load(state *s, const char *fn)
-{
+bool match_load(state *s, const char *fn) {
   if (NULL == s or NULL == fn)
     return true;
-
+  
   if (sig_file_open(s,fn))
     return true;
 
   bool status;
 
-  do 
-  {
+  do {
     Filedata * f; 
     status = sig_file_next(s,&f);
-    if (not status)
-    {
-      if (match_add(s,f))
-      {
+    if (not status) {
+      if (match_add(s,f)) {
 	// One bad hash doesn't mean this load was a failure.
 	// We don't change the return status because match_add failed.
-	print_error(s,"%s: unable to insert hash", fn);
+	print_error(s, "%s: unable to insert hash", fn);
 	break;
       }
     }

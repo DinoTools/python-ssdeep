@@ -1,9 +1,12 @@
+#ifndef FUZZY_H
+#define FUZZY_H
+
 /*
  * Copyright (C) ManTech International Corporation 2010
  * Copyright (C) Kyrus 2012
  * Copyright (C) 2013 Helmut Grohne <helmut@subdivi.de>
  *
- * $Id: fuzzy.h 180 2013-06-10 23:24:26Z jessekornblum $
+ * $Id: fuzzy.h 202 2013-11-07 20:15:06Z jessekornblum $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,9 +63,6 @@
 extern "C" {
 #endif
 
-#ifndef FUZZY_H
-#define FUZZY_H
-
 /**
  * @brief fuzzy_digest flag indicating to eliminate sequences of more than
  *        three identical characters
@@ -86,6 +86,16 @@ struct fuzzy_state;
 extern /*@only@*/ /*@null@*/ struct fuzzy_state *fuzzy_new(void);
 
 /**
+ * @brief Create a copy of a fuzzy_state object and return it.
+ *
+ * It can be used with fuzzy_update and fuzzy_digest independently of
+ * the original. It must be disposed with fuzzy_free like the original
+ * has to be cleared in this way.
+ * @return the cloned fuzzy_state or NULL on failure
+ */
+extern /*@only@*/ /*@null@*/ struct fuzzy_state *fuzzy_clone(const struct fuzzy_state *state);
+
+/**
  * @brief Feed the data contained in the given buffer to the state.
  *
  * When an error occurs, the state is undefined. In that case it must not be
@@ -94,7 +104,7 @@ extern /*@only@*/ /*@null@*/ struct fuzzy_state *fuzzy_new(void);
  * @param buffer_size The length of the given buffer
  * @return zero on success, non-zero on error
  */
-extern int fuzzy_update(struct fuzzy_state *state, 
+extern int fuzzy_update(struct fuzzy_state *state,
 			const unsigned char *buffer,
 			size_t buffer_size);
 
@@ -102,7 +112,7 @@ extern int fuzzy_update(struct fuzzy_state *state,
  * @brief Obtain the fuzzy hash from the state.
  *
  * This operation does not change the state at all. It reports the hash for the
- * concatenation of the data previously fed using fuzzy_update. 
+ * concatenation of the data previously fed using fuzzy_update.
  * @param result Where the fuzzy hash is stored. This variable
  * must be allocated to hold at least FUZZY_MAX_RESULT bytes.
  * @param flags is a bitwise or of FUZZY_FLAG_* macros. The absence of flags is
@@ -110,27 +120,27 @@ extern int fuzzy_update(struct fuzzy_state *state,
  * @return zero on success, non-zero on error
  */
 extern int fuzzy_digest(const struct fuzzy_state *state,
-			/*@out@*/ char *result, 
+			/*@out@*/ char *result,
 			unsigned int flags);
-  
+
 /**
  * @brief Dispose a fuzzy state.
  */
 extern void fuzzy_free(/*@only@*/ struct fuzzy_state *state);
-  
+
 /**
  * @brief Compute the fuzzy hash of a buffer
  *
  * The computes the fuzzy hash of the first buf_len bytes of the buffer.
  * It is the caller's responsibility to append the filename,
- * if any, to result after computation. 
+ * if any, to result after computation.
  * @param buf The data to be fuzzy hashed
  * @param buf_len The length of the data being hashed
  * @param result Where the fuzzy hash of buf is stored. This variable
  * must be allocated to hold at least FUZZY_MAX_RESULT bytes.
  * @return Returns zero on success, non-zero on error.
  */
-extern int fuzzy_hash_buf(const unsigned char *buf, 
+extern int fuzzy_hash_buf(const unsigned char *buf,
 			  uint32_t buf_len,
 			  /*@out@*/ char *result);
 
@@ -139,12 +149,12 @@ extern int fuzzy_hash_buf(const unsigned char *buf,
  *
  * Computes the fuzzy hash of the contents of the open file, starting
  * at the beginning of the file. When finished, the file pointer is
- * returned to its original position. If an error occurs, the file 
+ * returned to its original position. If an error occurs, the file
  * pointer's value is undefined.
  * It is the callers's responsibility to append the filename
  * to the result after computation.
  * @param handle Open handle to the file to be hashed
- * @param result Where the fuzzy hash of the file is stored. This 
+ * @param result Where the fuzzy hash of the file is stored. This
  * variable must be allocated to hold at least FUZZY_MAX_RESULT bytes.
  * @return Returns zero on success, non-zero on error
  */
@@ -160,7 +170,7 @@ extern int fuzzy_hash_file(FILE *handle, /*@out@*/ char *result);
  * It is the callers's responsibility to append the filename
  * to the result after computation.
  * @param handle Open handle to the stream to be hashed
- * @param result Where the fuzzy hash of the file is stored. This 
+ * @param result Where the fuzzy hash of the file is stored. This
  * variable must be allocated to hold at least FUZZY_MAX_RESULT bytes.
  * @return Returns zero on success, non-zero on error
  */
@@ -169,20 +179,20 @@ extern int fuzzy_hash_stream(FILE *handle, /*@out@*/ char *result);
 /**
  * @brief Compute the fuzzy hash of a file
  *
- * Opens, reads, and hashes the contents of the file 'filename' 
- * The result must be allocated to hold FUZZY_MAX_RESULT characters. 
+ * Opens, reads, and hashes the contents of the file 'filename'
+ * The result must be allocated to hold FUZZY_MAX_RESULT characters.
  * It is the caller's responsibility to append the filename
- * to the result after computation. 
+ * to the result after computation.
  * @param filename The file to be hashed
- * @param result Where the fuzzy hash of the file is stored. This 
+ * @param result Where the fuzzy hash of the file is stored. This
  * variable must be allocated to hold at least FUZZY_MAX_RESULT bytes.
- * @return Returns zero on success, non-zero on error. 
+ * @return Returns zero on success, non-zero on error.
  */
 extern int fuzzy_hash_filename(const char *filename, /*@out@*/ char * result);
 
 /// Computes the match score between two fuzzy hash signatures.
 /// @return Returns a value from zero to 100 indicating the
-/// match score of the 
+/// match score of the
 /// two signatures. A match score of zero indicates the sigantures
 /// did not match. When an error occurs, such as if one of the
 /// inputs is NULL, returns -1.
@@ -196,7 +206,7 @@ extern int fuzzy_compare(const char *sig1, const char *sig2);
 #define FUZZY_MAX_RESULT (2 * SPAMSUM_LENGTH + 20)
 
 #ifdef __cplusplus
-} 
+}
 #endif
 
 #endif

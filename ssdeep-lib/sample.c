@@ -6,7 +6,7 @@
    
    To compile the program using gcc:
 
-   $ gcc -Wall -I/usr/local/include -L/usr/local/lib sample.c -Lfuzzy
+   $ gcc -Wall -I/usr/local/include -L/usr/local/lib sample.c -lfuzzy
 
    Using mingw:
 
@@ -34,7 +34,7 @@
    SPECIFICALLY DISCLAIMS ANY EXPRESS OR IMPLIED WARRANTY OF FITNESS FOR
    HIGH RISK ACTIVITIES.   */
 
-// $Id: sample.c 97 2010-03-19 15:10:06Z jessekornblum $
+// $Id: sample.c 212 2014-07-24 00:05:35Z jessekornblum $
 
 #include <stdio.h>
 #include <stdlib.h>

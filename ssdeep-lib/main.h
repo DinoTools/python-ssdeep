@@ -1,7 +1,7 @@
 // ssdeep
 // Copyright (C) 2012 Kyrus
 //
-// $Id: main.h 144 2012-04-24 14:59:33Z jessekornblum $
+// $Id: main.h 210 2014-05-08 23:04:56Z jessekornblum $
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -84,12 +84,6 @@
 // input. But it was part of Jesse's template, so in it goes!
 #ifdef HAVE_FCNTL_H
 # include <fcntl.h>
-#endif
-
-
-#ifndef HAVE_FSEEKO
-# define fseeko fseek
-# define ftello ftell
 #endif
 
 

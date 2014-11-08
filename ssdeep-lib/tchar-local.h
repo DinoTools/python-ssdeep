@@ -1,5 +1,5 @@
 
-/* $Id: tchar-local.h 61 2008-02-22 23:18:59Z jessekornblum $ */
+/* $Id: tchar-local.h 210 2014-05-08 23:04:56Z jessekornblum $ */
 
 #ifndef __TCHAR_LOCAL_H
 #define __TCHAR_LOCAL_H
@@ -7,9 +7,6 @@
 
 /* Unicode support */
 #ifdef _WIN32
-
-// This says that we require Windows NT 4.0 to run
-#define _WIN32_WINNT 0x0400
 
 # include <windows.h>
 # include <wchar.h>

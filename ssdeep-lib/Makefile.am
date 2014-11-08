@@ -10,18 +10,18 @@ lib_LTLIBRARIES=libfuzzy.la
 libfuzzy_la_SOURCES=fuzzy.c edit_dist.c find-file-size.c
 libfuzzy_la_LDFLAGS=-no-undefined -version-info 2:0:0
 
-include_HEADERS=fuzzy.h
+include_HEADERS=fuzzy.h edit_dist.h
 
 man_MANS=ssdeep.1
 
 ssdeep_SOURCES = main.cpp match.cpp engine.cpp filedata.cpp   	\
-                 dig.cpp cycles.cpp helpers.cpp ui.cpp        	\
+                 dig.cpp cycles.cpp helpers.cpp ui.cpp edit_dist.h     	\
                  main.h fuzzy.h tchar-local.h ssdeep.h filedata.h match.h
 
 dll: $(libfuzzy_la_SOURCES)
 	$(CC) $(CFLAGS) -shared -o fuzzy.dll $(libfuzzy_la_SOURCES) \
         -Wl,--output-def,fuzzy.def,--out-implib,libfuzzy.a
-	$(STRIP) fuzzy.dll 
+	$(STRIP) fuzzy.dll
 
 CLEANFILES=fuzzy.dll fuzzy.def
 
@@ -58,7 +58,7 @@ win-package: win-docs
 	rm -rf $(distdir) $(WINDOWSDOCS)
 
 world: distclean
-	./configure --host=i386-mingw32
+	./configure --host=i686-w64-mingw32
 	make win-package
 	make dist
 

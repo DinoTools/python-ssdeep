@@ -1,3 +1,57 @@
+2014-10-24: Jesse Kornblum <research@jessekornblum.com>:
+
+	* Makefile.am: Adding edit_dist.h
+
+2014-10-20: Jesse Kornblum <research@jessekornblum.com>:
+
+	* edit_dist.c: Replaced with new, explicitly GPL licensed code.
+	* fuzzy.c: Removed edit distance function prototype
+	* edit_dist.h: Added edit distance function prototype
+
+2014-10-16: Jesse Kornblum <research@jessekornblum.com>:
+
+	* configure.ac: Version bump to 2.12
+	* fuzzy.c: Fixed bug when comparing identical hashes, bug #16.
+	* normal.sh: Use multiple cores when compiling
+
+2014-09-26: Jesse Kornblum <research@jessekornblum.com>:
+
+	* Makefile.am: Made libfuzzy compile as a shared library again.
+
+2014-09-09: Jesse Kornblum <research@jessekornblum.com>:
+
+	* fuzzy.c: Fixing edge case bug for signature creation.
+	* fuzzy.h: Prevent copying with constructor.
+
+2014-07-23: Jesse Kornblum <research@jessekornblum.com>:
+
+	* sample.c, README: Fixed -l flag in compile instructions.
+
+2014-05-14: Jesse Kornblum <research@jessekornblum.com>:
+
+	* filedata.h: Added destructor method, constructor copy by reference.
+	* Minor cleanup and code formatting.
+
+2014-05-08: Jesse Kornblum <research@jessekornblum.com>:
+
+	* Version bump to 2.10.1, updates for compiling on Fedora Core 20
+
+2013-11-25: Jesse Kornblum <research@jessekornblum.com>:
+
+	* fuzzy.c: Revised check for equal signature to be case sensitive
+
+2013-11-15: Jesse Kornblum <research@jessekornblum.com>:
+
+	* fuzzy.c: Declare signatures which are equal as matching 100%
+
+2013-09-21: Jesse Kornblum <research@jessekornblum.com>:
+
+	* fuzzy.c, fuzzy.h: Added fuzzy_clone function
+
+2013-07-24: Jesse Kornblum <research@jessekornblum.com>:
+
+	* fuzzy.h: Moving include guard to the top of the file.
+
 2013-07-16: Jesse Kornblum <research@jessekornblum.com>:
 
 	* fuzzy.c: Fix heap corruption bug #15.

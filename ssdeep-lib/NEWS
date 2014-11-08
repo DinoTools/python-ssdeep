@@ -1,3 +1,30 @@
+** Version 2.12 - 24 Oct 2014
+
+* Bug Fixes
+
+  - Fixed issue when comparing identical hashes but with different
+    block sizes.
+
+
+** Version 2.11.1 - 27 Sep 2014
+
+* Bug Fixes
+
+  - Made libfuzzy compile as a shared library again.
+
+
+** Version 2.11 - 11 Sep 2014
+
+* New Features
+
+  - Added fuzzy_clone function to the API.
+  - Moved to modern Win32 compiler.
+
+* Bug Fixes
+
+  - Fixed edge case on signature generaion. Behavior now matches v2.9 again.
+
+
 ** Version 2.10 - 17 Jul 2013
 
 * New Features

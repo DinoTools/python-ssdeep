@@ -1,5 +1,5 @@
 // SSDEEP
-// $Id: filedata.cpp 163 2012-07-17 19:59:54Z jessekornblum $
+// $Id: filedata.cpp 214 2014-09-09 23:31:07Z jessekornblum $
 // Copyright (C) 2012 Kyrus. See COPYING for details.
 
 #ifdef HAVE_CONFIG_H
@@ -56,7 +56,7 @@ void Filedata::clear_cluster(void)
 }
 
 
-Filedata::Filedata(const TCHAR *fn, const char * sig, const char * match_file)
+Filedata::Filedata(const TCHAR * fn, const char * sig, const char * match_file)
 {
   m_signature = std::string(sig);
   if (not valid())
@@ -75,7 +75,7 @@ Filedata::Filedata(const TCHAR *fn, const char * sig, const char * match_file)
 }
 
 
-Filedata::Filedata(const std::string sig, const char * match_file)
+Filedata::Filedata(const std::string& sig, const char * match_file)
 {
   // Set the easy stuff first
   m_cluster = NULL;
@@ -106,45 +106,49 @@ Filedata::Filedata(const std::string sig, const char * match_file)
 
     return;
   }
-  
+
   // There is a filename. Ok.
   // Advance past the comma and quotation mark.
   start += 2;
-  
+
   // Look for the second quotation mark, which should be at the end
-  // of the string. 
+  // of the string.
   stop = sig.find_last_of('"');
   if (stop != sig.size() - 1)
     throw std::bad_alloc();
-  
+
   // Strip off the final quotation mark and record the filename
   std::string tmp = sig.substr(start,(stop - start));
 
   // Strip off the filename from the signature. Remember that "start"
   // now points to two characters ahead of the comma
   m_signature = sig.substr(0,start-2);
-  
+
   // Unescape any quotation marks in the filename
   while (tmp.find(std::string("\\\"")) != std::string::npos)
     tmp.replace(tmp.find(std::string("\\\"")),2,std::string("\""));
-  
+
 #ifndef _WIN32
   m_filename = strdup(tmp.c_str());
 #else
   char * tmp2 = strdup(tmp.c_str());
-  
-  // On Win32 we have to do a kludgy cast from ordinary char 
+
+  // On Win32 we have to do a kludgy cast from ordinary char
   // values to the TCHAR values we use internally. Because we may have
   // reset the string length, get it again.
   // The extra +1 is for the terminating newline
   size_t i, sz = strlen(tmp2);
   m_filename = (TCHAR *)malloc(sizeof(TCHAR) * (sz + 1));
-  if (NULL == m_filename)
+  if (NULL == m_filename) {
+    free (tmp2);
     throw std::bad_alloc();
+  }
 
   for (i = 0 ; i < sz ; i++)
     m_filename[i] = (TCHAR)(tmp2[i]);
   m_filename[i] = 0;
+
+  free (tmp2);
 #endif
 }
 
