@@ -36,7 +36,7 @@ def build_ssdeep():
         pass
 
     returncode = subprocess.call(
-        "(cd ssdeep-lib && ./configure && make)",
+        "(cd ssdeep-lib && sh configure && make)",
         shell=True
     )
     if returncode == 0:
@@ -46,7 +46,7 @@ def build_ssdeep():
     print("Retry with autoreconf ...")
 
     returncode = subprocess.call(
-        "(cd ssdeep-lib && autoreconf --force && ./configure && make)",
+        "(cd ssdeep-lib && autoreconf --force && sh configure && make)",
         shell=True
     )
     if returncode != 0:
