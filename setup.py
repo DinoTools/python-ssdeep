@@ -103,7 +103,7 @@ setup(
         "Programming Language :: Python :: Implementation :: PyPy",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
-    keywords=("ssdeep",),
+    keywords="ssdeep",
     install_requires=[
         # ToDo: set min version
         "cffi",
