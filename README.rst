@@ -52,6 +52,13 @@ If all requirements are met it is possible to install the wrapper by using pip o
 
     $ pip install ssdeep
 
+The build will fail if the ssdeep library isn't installed.
+To use the included version of the ssdeep library use the following command.
+
+.. code-block:: console
+
+    $ BUILD_LIB=1 pip install ssdeep
+
 For more information have a look at the `python-ssdeep documentation`_.
 
 Licensing
