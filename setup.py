@@ -27,14 +27,6 @@ class CFFIInstall(install):
 
 
 def build_ssdeep():
-    try:
-        os.chmod(
-            "ssdeep-lib/configure",
-            stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO
-        )
-    except:
-        pass
-
     returncode = subprocess.call(
         "(cd ssdeep-lib && sh configure && make)",
         shell=True
