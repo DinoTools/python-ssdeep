@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import glob
 import os
-import stat
 import subprocess
 import sys
 from distutils.command.build import build
