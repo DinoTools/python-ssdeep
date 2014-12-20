@@ -27,14 +27,6 @@ class CFFIInstall(install):
 
 
 def build_ssdeep():
-    try:
-        os.chmod(
-            "ssdeep-lib/configure",
-            stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO
-        )
-    except:
-        pass
-
     returncode = subprocess.call(
         "(cd ssdeep-lib && sh configure && make)",
         shell=True
@@ -45,8 +37,9 @@ def build_ssdeep():
     print("Failed while building ssdeep lib with configure and make.")
     print("Retry with autoreconf ...")
 
+    # libtoolize: Install required files for automake
     returncode = subprocess.call(
-        "(cd ssdeep-lib && autoreconf --force && sh configure && make)",
+        "(cd ssdeep-lib && libtoolize && autoreconf --force && sh configure && make)",
         shell=True
     )
     if returncode != 0:
@@ -107,6 +100,8 @@ setup(
         "Programming Language :: Python :: 3.2",
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Programming Language :: Python :: Implementation :: PyPy",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     install_requires=[
