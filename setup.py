@@ -37,8 +37,9 @@ def build_ssdeep():
     print("Failed while building ssdeep lib with configure and make.")
     print("Retry with autoreconf ...")
 
+    # libtoolize: Install required files for automake
     returncode = subprocess.call(
-        "(cd ssdeep-lib && autoreconf --force && sh configure && make)",
+        "(cd ssdeep-lib && libtoolize && autoreconf --force && sh configure && make)",
         shell=True
     )
     if returncode != 0:
