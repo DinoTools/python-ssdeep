@@ -13,7 +13,7 @@ Changelog
 * Added additional tests
 * Fixed build issues on Windows(thanks to Paul Chaignon)
 * Added option to run tests with PyPy3
-* Fxied build to prevent automake version missmatch errors
+* Fixed build to prevent automake version missmatch errors
 * Updated documentation
 
 3.1 (2014-08-07)
