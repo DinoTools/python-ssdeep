@@ -11,6 +11,9 @@ Changelog
 
 * Update ssdeep lib to 2.12
 * Add additional tests
+* Fix build issues on Windows(thanks to Paul Chaignon)
+* Add option to run tests with PyPy3
+* Build fixes to prevent automake version missmatch errors
 
 3.1 - 2014-08-07
 ~~~~~~~~~~~~~~~~
