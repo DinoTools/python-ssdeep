@@ -6,7 +6,7 @@
  * Copyright (C) Kyrus 2012
  * Copyright (C) 2013 Helmut Grohne <helmut@subdivi.de>
  *
- * $Id: fuzzy.h 202 2013-11-07 20:15:06Z jessekornblum $
+ * $Id: fuzzy.h 253 2015-03-31 05:50:23Z a4lg $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,6 +94,15 @@ extern /*@only@*/ /*@null@*/ struct fuzzy_state *fuzzy_new(void);
  * @return the cloned fuzzy_state or NULL on failure
  */
 extern /*@only@*/ /*@null@*/ struct fuzzy_state *fuzzy_clone(const struct fuzzy_state *state);
+
+/**
+ * @brief Set fixed length of input
+ *
+ * If we know the file size to compute fuzzy digest, we can boost
+ * computation by restricting range of blocksize.
+ * @return 0 on success or -1 on failure
+ */
+extern int fuzzy_set_total_input_length(struct fuzzy_state *state, uint_least64_t total_fixed_length);
 
 /**
  * @brief Feed the data contained in the given buffer to the state.
@@ -193,7 +202,7 @@ extern int fuzzy_hash_filename(const char *filename, /*@out@*/ char * result);
 /// Computes the match score between two fuzzy hash signatures.
 /// @return Returns a value from zero to 100 indicating the
 /// match score of the
-/// two signatures. A match score of zero indicates the sigantures
+/// two signatures. A match score of zero indicates the signatures
 /// did not match. When an error occurs, such as if one of the
 /// inputs is NULL, returns -1.
 extern int fuzzy_compare(const char *sig1, const char *sig2);

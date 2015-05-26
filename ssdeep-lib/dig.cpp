@@ -9,7 +9,7 @@
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 //
-// $Id: dig.cpp 191 2013-07-16 17:55:00Z jessekornblum $
+// $Id: dig.cpp 258 2015-04-01 11:58:09Z a4lg $
 
 #include "ssdeep.h"
 
@@ -363,33 +363,13 @@ int process_normal(state *s, TCHAR *fn)
 #endif   // ifndef _WIN32
 
 
-/// The largest number of bytes we can process from stdin
-/// This limit is arbitrary and can be adjusted at will
-#define MAX_STDIN_BUFFER      536870912
-#define MAX_STDIN_BUFFER_STR  "512 MB"
-
 int process_stdin(state *s)
 {
   if (NULL == s)
     return TRUE;
 
   char sum[FUZZY_MAX_RESULT];
-  unsigned char * buffer = (unsigned char *)malloc(sizeof(unsigned char ) * MAX_STDIN_BUFFER);
-  if (NULL == buffer)
-    return TRUE;
-  memset(buffer,0,MAX_STDIN_BUFFER);
-
-  size_t sz = fread(buffer, 1, MAX_STDIN_BUFFER, stdin);
-  if (MAX_STDIN_BUFFER == sz)
-  {
-    print_error(s,
-		"%s: Only processed the first %s presented on stdin.",
-		__progname,
-		MAX_STDIN_BUFFER_STR);
-  }
-
-  int status = fuzzy_hash_buf(buffer, (uint32_t)sz, sum);
-  free(buffer);
+  int status = fuzzy_hash_stream(stdin, sum);
 
   if (status != 0)
   {
