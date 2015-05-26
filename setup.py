@@ -38,7 +38,7 @@ def build_ssdeep():
 
     # libtoolize: Install required files for automake
     returncode = subprocess.call(
-        "(cd ssdeep-lib && libtoolize && autoreconf --force && sh configure && make)",
+        "(cd ssdeep-lib && libtoolize && automake --add-missing && autoreconf --force && sh configure && make)",
         shell=True
     )
     if returncode != 0:
