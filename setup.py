@@ -38,9 +38,23 @@ def build_ssdeep():
 
     # libtoolize: Install required files for automake
     returncode = subprocess.call(
-        "(cd ssdeep-lib && libtoolize && automake --add-missing && autoreconf --force && sh configure && make)",
+        "(cd ssdeep-lib && libtoolize && autoreconf --force)",
         shell=True
     )
+    if returncode != 0:
+        # try harder
+        returncode = subprocess.call(
+            "(cd ssdeep-lib && automake --add-missing && autoreconf --force)",
+            shell=True
+        )
+        if returncode != 0:
+            sys.exit("Failed to reconfigure the project build.")
+
+    returncode = subprocess.call(
+        "(cd ssdeep-lib && sh configure && make)",
+        shell=True
+    )
+
     if returncode != 0:
         sys.exit("Failed while building ssdeep lib.")
 
