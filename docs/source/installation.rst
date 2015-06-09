@@ -86,3 +86,37 @@ Build and install Python module.
 .. code-block:: console
 
     $ sudo BUILD_LIB=1 pip install ssdeep
+
+
+Install on Debian 7
+~~~~~~~~~~~~~~~~~~~
+
+Python 2
+~~~~~~~~
+
+Install required packages.
+
+.. code-block:: console
+
+    $ sudo apt-get install build-essential libffi-dev python python-dev python-pip automake autoconf libtool
+
+Build and install Python module.
+
+.. code-block:: console
+
+    $ sudo BUILD_LIB=1 pip install ssdeep
+
+Python 3
+~~~~~~~~
+
+Install required packages.
+
+.. code-block:: console
+
+    $ sudo apt-get install build-essential libffi-dev python3 python3-dev python3-pip automake autoconf libtool
+
+Build and install Python module.
+
+.. code-block:: console
+
+    $ sudo BUILD_LIB=1 pip install ssdeep
