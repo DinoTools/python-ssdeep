@@ -1,4 +1,4 @@
-Installation
+gInstallation
 ============
 
 Requirements
@@ -49,3 +49,40 @@ You should now be able to build and install python-ssdeep with the included libr
 .. code-block:: console
 
     $ BUILD_LIB=1 pip install ssdeep
+
+Install on CentOS 7
+-------------------
+
+Use lib from epel
+~~~~~~~~~~~~~~~~~
+
+Install required packages.
+
+.. code-block:: console
+
+    $ sudo yum groupinstall "Development Tools"
+    $ sudo yum install epel-release
+    $ sudo yum install libffi-devel python-devel python-pip ssdeep-devel ssdeep-lib
+
+Build and install Python module.
+
+.. code-block:: console
+
+    $ sudo pip install ssdeep
+
+Use included ssdeep lib
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Install required packages.
+
+.. code-block:: console
+
+    $ sudo yum groupinstall "Development Tools"
+    $ sudo yum install epel-release
+    $ sudo yum install libffi-devel python-devel python-pip automake autoconf libtool
+
+Build and install Python module.
+
+.. code-block:: console
+
+    $ sudo BUILD_LIB=1 pip install ssdeep
