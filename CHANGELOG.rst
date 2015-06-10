@@ -6,6 +6,10 @@ Changelog
 
 .. note:: This version is not yet released and is under development.
 
+* Update ssdeep lib to 2.13(thanks to Charles Lindsay)
+* Update install instructions
+* Add additional CI tests on CentOS 7, Debian 7/8 and Ubuntu 12.04/14.04
+
 3.1.1 (2014-12-20)
 ~~~~~~~~~~~~~~~~~~
 
