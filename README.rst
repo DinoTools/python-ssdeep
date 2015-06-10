@@ -14,8 +14,16 @@ content and length.
     :target: https://pypi.python.org/pypi/ssdeep/
     :alt: License
 
+.. image:: https://readthedocs.org/projects/python-ssdeep/?badge=latest
+    :target: https://python-ssdeep.readthedocs.org/en/latest/
+    :alt: Latest Docs
+
 .. image:: https://travis-ci.org/DinoTools/python-ssdeep.svg?branch=master
     :target: https://travis-ci.org/DinoTools/python-ssdeep
+
+.. image:: https://ci.dinotools.org/buildStatus/icon?job=python-ssdeep-master
+    :target: https://ci.dinotools.org/job/python-ssdeep-master/
+    :alt: Build state
 
 
 How to use it
