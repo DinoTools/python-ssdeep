@@ -216,20 +216,6 @@ Build and install Python module.
 
     $ sudo BUILD_LIB=1 pip install ssdeep
 
-**Use ssdeep from Ubuntu repository**
-
-Install required packages.
-
-.. code-block:: console
-
-    $ sudo apt-get install build-essential libffi-dev python python-dev python-pip libfuzzy-dev
-
-Build and install Python module.
-
-.. code-block:: console
-
-    $ sudo pip install ssdeep
-
 Python 3
 ~~~~~~~~
 
@@ -246,17 +232,3 @@ Build and install Python module.
 .. code-block:: console
 
     $ sudo BUILD_LIB=1 pip3 install ssdeep
-
-**Use ssdeep from Ubuntu repository**
-
-Install required packages.
-
-.. code-block:: console
-
-    $ sudo apt-get install build-essential libffi-dev python3 python3-dev python3-pip libfuzzy-dev
-
-Build and install Python module.
-
-.. code-block:: console
-
-    $ sudo pip3 install ssdeep
