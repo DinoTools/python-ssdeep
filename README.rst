@@ -61,6 +61,13 @@ To use the included version of the ssdeep library use the following command.
 
 For more information have a look at the `python-ssdeep documentation`_.
 
+Tested on ...
+=============
+
+* CentOS 7
+* Debian 7, 8
+* Ubuntu 12.04, 14.04
+
 Licensing
 =========
 
