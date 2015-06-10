@@ -1,4 +1,4 @@
-gInstallation
+Installation
 ============
 
 Requirements
