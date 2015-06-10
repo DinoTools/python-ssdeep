@@ -53,25 +53,10 @@ You should now be able to build and install python-ssdeep with the included libr
 Install on CentOS 7
 -------------------
 
-Use lib from epel
-~~~~~~~~~~~~~~~~~
+Python 2
+~~~~~~~~
 
-Install required packages.
-
-.. code-block:: console
-
-    $ sudo yum groupinstall "Development Tools"
-    $ sudo yum install epel-release
-    $ sudo yum install libffi-devel python-devel python-pip ssdeep-devel ssdeep-lib
-
-Build and install Python module.
-
-.. code-block:: console
-
-    $ sudo pip install ssdeep
-
-Use included ssdeep lib
-~~~~~~~~~~~~~~~~~~~~~~~
+**Use included ssdeep lib**
 
 Install required packages.
 
@@ -87,12 +72,30 @@ Build and install Python module.
 
     $ sudo BUILD_LIB=1 pip install ssdeep
 
+**Use lib from epel**
+
+Install required packages.
+
+.. code-block:: console
+
+    $ sudo yum groupinstall "Development Tools"
+    $ sudo yum install epel-release
+    $ sudo yum install libffi-devel python-devel python-pip ssdeep-devel ssdeep-lib
+
+Build and install Python module.
+
+.. code-block:: console
+
+    $ sudo pip install ssdeep
+
 
 Install on Debian 7
-~~~~~~~~~~~~~~~~~~~
+-------------------
 
 Python 2
 ~~~~~~~~
+
+**Use included ssdeep lib**
 
 Install required packages.
 
@@ -108,6 +111,8 @@ Build and install Python module.
 
 Python 3
 ~~~~~~~~
+
+**Use included ssdeep lib**
 
 Install required packages.
 
