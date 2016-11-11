@@ -10,12 +10,22 @@ RUN apt-get update && \
     apt-get install -y \
         build-essential \
         libffi-dev \
+        && \
+    apt-get clean
+
+RUN apt-get install -y \
         python \
         python-dev \
         python-pip \
+        && \
+    apt-get clean
+
+
+RUN apt-get install -y \
         libfuzzy-dev \
         && \
     apt-get clean
+
 
 COPY . /code
 RUN cd /code && \

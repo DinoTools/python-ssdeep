@@ -1,12 +1,15 @@
 FROM centos:7
 
 RUN yum -q -y groupinstall "Development Tools" && \
-    yum -q -y install epel-release && \
-    yum -q -y install \
+    yum -q -y install epel-release
+
+RUN yum -q -y install \
         libffi-devel \
         python-devel \
         python-pip \
         pytest \
+
+RUN yum -q -y install \
         automake \
         autoconf \
         libtool
