@@ -27,6 +27,6 @@ RUN apt-get install -y \
 
 COPY . /code
 RUN cd /code && \
-    BUILD_LIB=1 pip3 install . && \
+    BUILD_LIB=0 pip3 install . && \
     pip3 install pytest && \
     py.test
