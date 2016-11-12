@@ -7,7 +7,7 @@ RUN yum -q -y install \
         libffi-devel \
         python-devel \
         python-pip \
-        pytest \
+        pytest
 
 RUN yum -q -y install \
         automake \

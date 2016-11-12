@@ -20,7 +20,7 @@ RUN apt-get install -y \
         && \
     apt-get clean
 
-RUNapt-get install -y \
+RUN apt-get install -y \
         libfuzzy-dev \
         && \
     apt-get clean
