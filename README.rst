@@ -73,8 +73,8 @@ Tested on ...
 =============
 
 * CentOS 7
-* Debian 7, 8
-* Ubuntu 12.04, 14.04
+* Debian 8
+* Ubuntu 14.04, 16.04
 
 Licensing
 =========
