@@ -7,12 +7,16 @@ have sequences of identical bytes in the same order, although bytes in between t
 content and length.
 
 .. image:: https://pypip.in/version/ssdeep/badge.svg
-    :target: https://pypi.python.org/pypi/ssdeep/
+    :target: https://img.shields.io/pypi/v/ssdeep.svg
     :alt: Latest Version
 
-.. image:: https://pypip.in/license/ssdeep/badge.svg
+.. image:: https://img.shields.io/pypi/l/ssdeep.svg
     :target: https://pypi.python.org/pypi/ssdeep/
     :alt: License
+
+.. image:: https://img.shields.io/pypi/pyversions/ssdeep.svg
+    :target: https://pypi.python.org/pypi/ssdeep/
+    :alt: Python Versions
 
 .. image:: https://readthedocs.org/projects/python-ssdeep/badge/
     :target: https://python-ssdeep.readthedocs.io/en/latest/
