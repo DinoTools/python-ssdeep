@@ -232,3 +232,70 @@ Build and install Python module.
 .. code-block:: console
 
     $ sudo BUILD_LIB=1 pip3 install ssdeep
+
+
+Install on Ubuntu 16.04
+-----------------------
+
+Python 2
+~~~~~~~~
+
+**Use lib from official Ubuntu repository (recommended)**
+
+Install required packages.
+
+.. code-block:: console
+
+    $ sudo apt-get install build-essential libffi-dev python python-dev python-pip libfuzzy-dev
+
+Build and install Python module.
+
+.. code-block:: console
+
+    $ pip install ssdeep
+
+**Use included ssdeep lib**
+
+Install required packages.
+
+.. code-block:: console
+
+    $ sudo apt-get install build-essential libffi-dev python python-dev python-pip automake autoconf libtool
+
+Build and install Python module.
+
+.. code-block:: console
+
+    $ BUILD_LIB=1 pip install ssdeep
+
+
+Python 3
+~~~~~~~~
+
+**Use lib from official Ubuntu repository (recommended)**
+
+Install required packages.
+
+.. code-block:: console
+
+    $ sudo apt-get install build-essential libffi-dev python3 python3-dev python3-pip libfuzzy-dev
+
+Build and install Python module.
+
+.. code-block:: console
+
+    $ pip3 install ssdeep
+
+**Use included ssdeep lib**
+
+Install required packages.
+
+.. code-block:: console
+
+    $ sudo apt-get install build-essential libffi-dev python3 python3-dev python3-pip automake autoconf libtool
+
+Build and install Python module.
+
+.. code-block:: console
+
+    $ BUILD_LIB=1 pip3 install ssdeep
