@@ -6,8 +6,8 @@ triggered piecewise hashes (CTPH). Also called fuzzy hashes, CTPH can match inpu
 have sequences of identical bytes in the same order, although bytes in between these sequences may be different in both
 content and length.
 
-.. image:: https://pypip.in/version/ssdeep/badge.svg
-    :target: https://img.shields.io/pypi/v/ssdeep.svg
+.. image:: https://img.shields.io/pypi/v/ssdeep.svg
+    :target: https://pypi.python.org/pypi/ssdeep/
     :alt: Latest Version
 
 .. image:: https://img.shields.io/pypi/l/ssdeep.svg
