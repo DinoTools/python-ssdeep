@@ -14,8 +14,8 @@ content and length.
     :target: https://pypi.python.org/pypi/ssdeep/
     :alt: License
 
-.. image:: https://readthedocs.org/projects/python-ssdeep/?badge=latest
-    :target: https://python-ssdeep.readthedocs.org/en/latest/
+.. image:: https://readthedocs.org/projects/python-ssdeep/badge/
+    :target: https://python-ssdeep.readthedocs.io/en/latest/
     :alt: Latest Docs
 
 .. image:: https://travis-ci.org/DinoTools/python-ssdeep.svg?branch=master
@@ -85,4 +85,4 @@ This wrapper includes the unchanged source distribution of `ssdeep version 2.13`
 
 .. _ssdeep by Jesse Kornblum: http://ssdeep.sourceforge.net/
 .. _ssdeep version 2.13: http://ssdeep.sourceforge.net/changes.txt
-.. _python-ssdeep documentation: http://python-ssdeep.readthedocs.org
+.. _python-ssdeep documentation: https://python-ssdeep.readthedocs.io
