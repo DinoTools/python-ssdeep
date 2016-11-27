@@ -6,3 +6,6 @@ __pycache__
 *.egg
 *.pyc
 *.pyo
+
+/.idea
+/docs/build
