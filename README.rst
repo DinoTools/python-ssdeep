@@ -6,16 +6,20 @@ triggered piecewise hashes (CTPH). Also called fuzzy hashes, CTPH can match inpu
 have sequences of identical bytes in the same order, although bytes in between these sequences may be different in both
 content and length.
 
-.. image:: https://pypip.in/version/ssdeep/badge.svg
+.. image:: https://img.shields.io/pypi/v/ssdeep.svg
     :target: https://pypi.python.org/pypi/ssdeep/
     :alt: Latest Version
 
-.. image:: https://pypip.in/license/ssdeep/badge.svg
+.. image:: https://img.shields.io/pypi/l/ssdeep.svg
     :target: https://pypi.python.org/pypi/ssdeep/
     :alt: License
 
-.. image:: https://readthedocs.org/projects/python-ssdeep/?badge=latest
-    :target: https://python-ssdeep.readthedocs.org/en/latest/
+.. image:: https://img.shields.io/pypi/pyversions/ssdeep.svg
+    :target: https://pypi.python.org/pypi/ssdeep/
+    :alt: Python Versions
+
+.. image:: https://readthedocs.org/projects/python-ssdeep/badge/
+    :target: https://python-ssdeep.readthedocs.io/en/latest/
     :alt: Latest Docs
 
 .. image:: https://travis-ci.org/DinoTools/python-ssdeep.svg?branch=master
@@ -73,8 +77,8 @@ Tested on ...
 =============
 
 * CentOS 7
-* Debian 7, 8
-* Ubuntu 12.04, 14.04
+* Debian 8
+* Ubuntu 14.04, 16.04
 
 Licensing
 =========
@@ -85,4 +89,4 @@ This wrapper includes the unchanged source distribution of `ssdeep version 2.13`
 
 .. _ssdeep by Jesse Kornblum: http://ssdeep.sourceforge.net/
 .. _ssdeep version 2.13: http://ssdeep.sourceforge.net/changes.txt
-.. _python-ssdeep documentation: http://python-ssdeep.readthedocs.org
+.. _python-ssdeep documentation: https://python-ssdeep.readthedocs.io
