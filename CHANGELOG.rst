@@ -1,10 +1,14 @@
 Changelog
 =========
 
-3.2 (`master`_)
+3.x (`master`_)
 ~~~~~~~~~~~~~~~
 
 .. note:: This version is not yet released and is under development.
+
+
+3.2 (2016-11-27)
+~~~~~~~~~~~~~~~~
 
 * Update ssdeep lib to 2.13(thanks to Charles Lindsay)
 * Update install instructions
