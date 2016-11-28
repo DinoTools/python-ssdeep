@@ -122,12 +122,12 @@ setup(
     install_requires=[
         # ToDo: set min version
         "cffi",
-        "six >= 1.4.1"
+        "six >= 1.10.0"
     ],
     setup_requires=[
         # ToDo: set min version
         "cffi",
-        "six >= 1.4.1"
+        "six >= 1.10.0"
     ],
     packages=find_packages(exclude=["*.tests", "*.tests.*"]),
     include_package_data=True,
