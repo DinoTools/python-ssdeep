@@ -9,7 +9,7 @@ __all__ = [
     "__version__",
 ]
 
-__title__ = "ssdeep"
+__title__ = "python-ssdeep"
 __summary__ = "Python wrapper for the ssdeep library"
 __uri__ = "http://github.com/DinoTools/python-ssdeep"
 
