@@ -45,7 +45,7 @@ Install required packages.
 
     $ sudo yum groupinstall "Development Tools"
     $ sudo yum install epel-release
-    $ sudo yum install libffi-devel python-devel python-pip ssdeep-devel ssdeep-lib
+    $ sudo yum install libffi-devel python-devel python-pip ssdeep-devel ssdeep-libs
 
 Build and install Python module.
 
