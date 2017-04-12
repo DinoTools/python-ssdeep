@@ -127,8 +127,10 @@ setup(
     setup_requires=[
         # ToDo: set min version
         "cffi",
+        "pytest-runner",
         "six >= 1.4.1"
     ],
+    tests_require=["pytest"],
     packages=find_packages(exclude=["*.tests", "*.tests.*"]),
     include_package_data=True,
     cmdclass={
