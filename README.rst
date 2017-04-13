@@ -77,7 +77,7 @@ Tested on ...
 =============
 
 * CentOS 7
-* Debian 8
+* Debian 8, 9
 * Ubuntu 14.04, 16.04
 
 Documentation
