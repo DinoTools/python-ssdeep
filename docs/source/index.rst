@@ -23,6 +23,7 @@ Contents:
    usage
    api
    faq
+   contributing
    changelog
 
 History
