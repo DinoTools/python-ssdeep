@@ -91,8 +91,8 @@ Build and install Python module.
 
     $ sudo BUILD_LIB=1 pip install ssdeep
 
-Install on Debian 8
--------------------
+Install on Debian 8/9
+---------------------
 
 Python 2
 ~~~~~~~~
