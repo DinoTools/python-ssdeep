@@ -80,6 +80,17 @@ Tested on ...
 * Debian 8
 * Ubuntu 14.04, 16.04
 
+Documentation
+=============
+
+Feel free to use the prebuild `python-ssdeep documentation`_ or use the steps below to build the documentation.
+
+.. code-block:: console
+
+    $ cd docs
+    $ pip install -r requirements.txt
+    $ make html
+
 Licensing
 =========
 
