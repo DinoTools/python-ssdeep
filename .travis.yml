@@ -20,7 +20,7 @@ install:
   - pip install pytest-cov
 
 script:
-  py.test --cov overpy --cov-report=term-missing -v tests/
+  py.test --cov ssdeep --cov-report=term-missing -v tests/
 
 after_script:
   coveralls --verbose
