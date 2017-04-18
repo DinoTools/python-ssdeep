@@ -11,7 +11,16 @@ python:
   - "3.4"
   - "3.5"
 
+before_install:
+  - if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then pip install 'coverage<4.0.0'; fi
+  - pip install coveralls
+
 install:
   - BUILD_LIB=1 pip install .
+  - pip install pytest-cov
 
-script: py.test
+script:
+  py.test --cov ssdeep --cov-report=term-missing -v tests/
+
+after_script:
+  coveralls --verbose
