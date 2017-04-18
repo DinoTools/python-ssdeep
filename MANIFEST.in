@@ -1,3 +1,3 @@
 include README.rst CHANGELOG.rst
-recursive-include ssdeep-lib *.c *.cpp *.h Makefile.am install-sh config.guess COPYING Makefile.in ssdeep.1 configure README depcomp NEWS TODO config.sub FILEFORMAT missing configure.ac config.h.in aclocal.m4 AUTHORS INSTALL ltmain.sh ChangeLog compile
+recursive-include src/ssdeep-lib *.c *.cpp *.h Makefile.am install-sh config.guess COPYING Makefile.in ssdeep.1 configure README depcomp NEWS TODO config.sub FILEFORMAT missing configure.ac config.h.in aclocal.m4 AUTHORS INSTALL ltmain.sh ChangeLog compile
 recursive-include tests *.py
