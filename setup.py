@@ -124,11 +124,11 @@ setup(
     ],
     keywords="ssdeep",
     install_requires=[
-        "cffi>=1.4.1",
+        "cffi>=0.8.6",
         "six>=1.4.1",
     ],
     setup_requires=[
-        "cffi>=1.4.1",
+        "cffi>=0.8.6",
         "pytest-runner",
         "six>=1.4.1",
     ],
