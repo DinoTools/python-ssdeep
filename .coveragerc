@@ -1,0 +1,10 @@
+[run]
+branch = True
+source =
+    ssdeep
+
+[paths]
+source =
+   src/ssdeep
+   .tox/*/lib/python*/site-packages/ssdeep
+   .tox/pypy/site-packages/ssdeep
