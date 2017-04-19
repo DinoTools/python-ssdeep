@@ -17,10 +17,12 @@ before_install:
 
 install:
   - BUILD_LIB=1 pip install .
-  - pip install pytest-cov
+  - pip install pytest coverage
 
 script:
-  py.test --cov ssdeep --cov-report=term-missing -v tests/
+  - coverage run --parallel-mode -m pytest --capture=no --strict {posargs}
+  - coverage combine
+  - coverage report -m
 
-after_script:
-  coveralls --verbose
+after_success:
+  - coveralls --verbose
