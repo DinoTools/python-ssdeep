@@ -20,7 +20,7 @@ install:
   - pip install pytest coverage
 
 script:
-  - coverage run --parallel-mode -m pytest --capture=no --strict {posargs}
+  - coverage run --parallel-mode -m pytest --capture=no --strict tests
   - coverage combine
   - coverage report -m
 
