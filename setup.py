@@ -135,6 +135,16 @@ setup(
     tests_require=[
         "pytest",
     ],
+    extras_require={
+        "docstest": [
+            "doc8",
+            "pyenchant",
+            "readme_renderer >= 16.0",
+            "sphinx",
+            "sphinx_rtd_theme",
+            "sphinxcontrib-spelling",
+        ],
+    },
     package_dir={'': 'src'},
     packages=find_packages(where="src", exclude=["_cffi_src", "_cffi_src.*"]),
     include_package_data=True,
