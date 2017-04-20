@@ -138,11 +138,9 @@ setup(
     extras_require={
         "docstest": [
             "doc8",
-            "pyenchant",
             "readme_renderer >= 16.0",
             "sphinx",
             "sphinx_rtd_theme",
-            "sphinxcontrib-spelling",
         ],
     },
     package_dir={'': 'src'},
