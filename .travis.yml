@@ -22,7 +22,6 @@ matrix:
           env: TOXENV=py35
 
 before_install:
-    - if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then pip install 'coverage<4.0.0'; fi
     - if [[ "${TOXENV}" == 'py32' ]] || [[ "${TOXENV}" == 'pypy' ]] || [[ "${TOXENV}" == 'pypy3' ]]; then pip install 'setuptools_scm'; fi
     - pip install coveralls
 
