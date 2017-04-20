@@ -8,3 +8,4 @@ source =
    src/ssdeep
    .tox/*/lib/python*/site-packages/ssdeep
    .tox/pypy/site-packages/ssdeep
+   .tox/pypy3/site-packages/ssdeep
