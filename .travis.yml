@@ -20,6 +20,10 @@ matrix:
           env: TOXENV=py34
         - python: 3.5
           env: TOXENV=py35
+        - python: 3.6
+          env: TOXENV=py36
+        - python: 2.7
+          env: TOXENV=docs
 
 before_install:
     - if [[ "${TOXENV}" == 'py32' ]] || [[ "${TOXENV}" == 'pypy' ]] || [[ "${TOXENV}" == 'pypy3' ]]; then pip install 'setuptools_scm'; fi
