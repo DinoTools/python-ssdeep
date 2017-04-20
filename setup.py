@@ -8,6 +8,10 @@ from setuptools import setup, find_packages
 from setuptools.command.install import install
 
 base_dir = os.path.dirname(__file__)
+src_dir = os.path.join(base_dir, "src")
+import sys
+sys.path.insert(0, src_dir)
+
 use_system_lib = True
 if os.environ.get("BUILD_LIB") == "1":
     use_system_lib = False
@@ -27,7 +31,7 @@ class CFFIInstall(install):
 
 def build_ssdeep():
     returncode = subprocess.call(
-        "(cd ssdeep-lib && sh configure && make)",
+        "(cd src/ssdeep-lib && sh configure && make)",
         shell=True
     )
     if returncode == 0:
@@ -38,20 +42,20 @@ def build_ssdeep():
 
     # libtoolize: Install required files for automake
     returncode = subprocess.call(
-        "(cd ssdeep-lib && libtoolize && autoreconf --force)",
+        "(cd src/ssdeep-lib && libtoolize && autoreconf --force)",
         shell=True
     )
     if returncode != 0:
         # try harder
         returncode = subprocess.call(
-            "(cd ssdeep-lib && automake --add-missing && autoreconf --force)",
+            "(cd src/ssdeep-lib && automake --add-missing && autoreconf --force)",
             shell=True
         )
         if returncode != 0:
             sys.exit("Failed to reconfigure the project build.")
 
     returncode = subprocess.call(
-        "(cd ssdeep-lib && sh configure && make)",
+        "(cd src/ssdeep-lib && sh configure && make)",
         shell=True
     )
 
@@ -67,7 +71,7 @@ def get_ext_modules():
         build_ssdeep()
         binding = Binding(
             extra_objects=get_objects(),
-            include_dirs=["./ssdeep-lib/"],
+            include_dirs=["./src/ssdeep-lib/"],
             libraries=[]
         )
     binding.verify()
@@ -78,13 +82,13 @@ def get_ext_modules():
 
 
 def get_objects():
-    objects = glob.glob("ssdeep-lib/.libs/*.o")
+    objects = glob.glob("src/ssdeep-lib/.libs/*.o")
     if len(objects) > 0:
         return objects
-    return glob.glob("ssdeep-lib/.libs/*.obj")
+    return glob.glob("src/ssdeep-lib/.libs/*.obj")
 
 about = {}
-with open(os.path.join(base_dir, "ssdeep", "__about__.py")) as f:
+with open(os.path.join(src_dir, "ssdeep", "__about__.py")) as f:
     exec(f.read(), about)
 
 with open(os.path.join(base_dir, "README.rst")) as f:
@@ -120,18 +124,27 @@ setup(
     ],
     keywords="ssdeep",
     install_requires=[
-        # ToDo: set min version
-        "cffi",
-        "six >= 1.4.1"
+        "cffi>=0.8.6",
+        "six>=1.4.1",
     ],
     setup_requires=[
-        # ToDo: set min version
-        "cffi",
+        "cffi>=0.8.6",
         "pytest-runner",
-        "six >= 1.4.1"
+        "six>=1.4.1",
     ],
-    tests_require=["pytest"],
-    packages=find_packages(exclude=["*.tests", "*.tests.*"]),
+    tests_require=[
+        "pytest",
+    ],
+    extras_require={
+        "docstest": [
+            "doc8",
+            "readme_renderer >= 16.0",
+            "sphinx",
+            "sphinx_rtd_theme",
+        ],
+    },
+    package_dir={'': 'src'},
+    packages=find_packages(where="src", exclude=["_cffi_src", "_cffi_src.*"]),
     include_package_data=True,
     cmdclass={
         "build": CFFIBuild,

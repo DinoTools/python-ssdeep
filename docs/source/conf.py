@@ -38,7 +38,7 @@ sys.path.insert(
     os.path.abspath(
         os.path.join(
             os.path.dirname(__file__),
-            '../../'
+            '../../src'
         )
     )
 )
@@ -79,8 +79,8 @@ copyright = '2014-2015, DinoTools'
 #
 # The short X.Y version.
 ver_dict = {}
-with open("../../ssdeep/__about__.py") as f:
-    code = compile(f.read(), "../../ssdeep/__about__.py", "exec")
+with open("../../src/ssdeep/__about__.py") as f:
+    code = compile(f.read(), "../../src/ssdeep/__about__.py", "exec")
     exec(code, ver_dict)
 
 # The full version, including alpha/beta/rc tags.
