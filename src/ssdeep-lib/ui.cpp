@@ -1,5 +1,5 @@
 
-/* $Id: ui.cpp 152 2012-07-14 18:09:45Z jessekornblum $ */
+/* $Id$ */
 
 #include "ssdeep.h"
 #include <stdarg.h>

@@ -1,5 +1,5 @@
 // SSDEEP
-// $Id: filedata.cpp 214 2014-09-09 23:31:07Z jessekornblum $
+// $Id$
 // Copyright (C) 2012 Kyrus. See COPYING for details.
 
 #ifdef HAVE_CONFIG_H

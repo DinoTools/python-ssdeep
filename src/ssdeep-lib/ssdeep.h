@@ -6,7 +6,7 @@
 // Copyright (C) 2012 Kyrus
 // Copyright (C) 2008 ManTech International Corporation
 //
-// $Id: ssdeep.h 190 2013-07-11 00:40:22Z jessekornblum $
+// $Id$
 //
 
 #include "main.h"

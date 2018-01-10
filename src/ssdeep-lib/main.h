@@ -1,7 +1,7 @@
 // ssdeep
 // Copyright (C) 2012 Kyrus
 //
-// $Id: main.h 210 2014-05-08 23:04:56Z jessekornblum $
+// $Id$
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
