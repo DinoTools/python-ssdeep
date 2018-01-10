@@ -13,7 +13,7 @@ __title__ = "ssdeep"
 __summary__ = "Python wrapper for the ssdeep library"
 __uri__ = "http://github.com/DinoTools/python-ssdeep"
 
-__version__ = "3.2"
+__version__ = "3.3"
 
 __author__ = "PhiBo (DinoTools)"
 __email__ = ""
