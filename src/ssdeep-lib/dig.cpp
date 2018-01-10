@@ -9,7 +9,7 @@
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 //
-// $Id: dig.cpp 258 2015-04-01 11:58:09Z a4lg $
+// $Id$
 
 #include "ssdeep.h"
 

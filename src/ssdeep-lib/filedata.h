@@ -4,7 +4,7 @@
 /// @file filedata.h
 // Copyright (C) 2012 Kyrus. See COPYING for details
 
-// $Id: filedata.h 214 2014-09-09 23:31:07Z jessekornblum $
+// $Id$
 
 #include <set>
 #include <string>

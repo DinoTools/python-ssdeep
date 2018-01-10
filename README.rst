@@ -96,8 +96,8 @@ Licensing
 
 The code is licensed under the terms of the LGPLv3+.
 
-This wrapper includes the unchanged source distribution of `ssdeep version 2.13`_. It is licensed under the GPLv2.
+This wrapper includes the unchanged source distribution of `ssdeep version 2.14.1`_. It is licensed under the GPLv2.
 
-.. _ssdeep by Jesse Kornblum: http://ssdeep.sourceforge.net/
-.. _ssdeep version 2.13: http://ssdeep.sourceforge.net/changes.txt
+.. _ssdeep by Jesse Kornblum: https://ssdeep-project.github.io/ssdeep/
+.. _ssdeep version 2.14.1: https://github.com/ssdeep-project/ssdeep/releases/tag/release-2.14.1
 .. _python-ssdeep documentation: https://python-ssdeep.readthedocs.io

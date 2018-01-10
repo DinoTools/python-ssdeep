@@ -1,4 +1,4 @@
-AC_INIT([SSDEEP],[2.13],[research@jessekornblum.com])
+AC_INIT([ssdeep],[2.14.1],[floss_ssdeep@irq.a4lg.com])
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_FILES([Makefile])
@@ -16,7 +16,7 @@ AC_CONFIG_MACRO_DIR([m4])
 
 case $host in
   *-*-*linux*-*) AC_DEFINE([__LINUX__],1,[Linux operating system functions]) ;;
-  *-*-mingw32)   LIBS="-static-libgcc -static-libstdc++ $LIBS" && CPPFLAGS="-DUNICODE -D_UNICODE $CPPFLAGS"
+  *-*-mingw32)   CPPFLAGS="-DUNICODE -D_UNICODE $CPPFLAGS"
 esac
 
 
@@ -64,6 +64,14 @@ AC_CHECK_HEADERS([inttypes.h])
 AC_CHECK_HEADERS([fcntl.h sys/types.h sys/ioctl.h sys/param.h wchar.h unistd.h sys/stat.h sys/disk.h])
 
 AC_CHECK_HEADER([inttypes.h],,AC_MSG_ERROR([You must have inttypes.h or some other C99 equivalent]),)
+
+# Bit-parallel string processing
+AC_ARG_ENABLE([bitparallel-string-ops],
+[AS_HELP_STRING([--disable-bitparallel-string-ops], [disable using bit-parallel string operations (which would work best at 64-bit environment)])],,
+[enable_bitparallel_string_ops=yes])
+AS_IF([test "x$enable_bitparallel_string_ops" = xno],[
+AC_DEFINE([SSDEEP_DISABLE_POSITION_ARRAY], [1], [Define to 1 if the user chose to disable bit-parallel string operations.])
+],)
 
 # These includes are required on FreeBSD
 AC_CHECK_HEADERS([sys/mount.h],[],[],

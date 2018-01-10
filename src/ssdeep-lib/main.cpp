@@ -3,7 +3,7 @@
 // Copyright (C) 2012 Kyrus
 // Copyright (C) 2010 ManTech International Corporation
 //
-// $Id: main.cpp 210 2014-05-08 23:04:56Z jessekornblum $
+// $Id$
 //
 // This program is licensed under version 2 of the GNU Public License.
 // See the file COPYING for details. 
@@ -39,8 +39,8 @@ static bool initialize_state(state *s)
 // no more than 22 lines of output.
 static void usage(void)
 {
-  print_status ("%s version %s by Jesse Kornblum", __progname, VERSION);
-  print_status ("Copyright (C) 2014 Facebook");
+  print_status ("%s version %s by Jesse Kornblum and the ssdeep Project", __progname, VERSION);
+  print_status ("For copyright information, see man page or README.TXT.");
   print_status ("");
   print_status ("Usage: %s [-m file] [-k file] [-dpgvrsblcxa] [-t val] [-h|-V] [FILES]", 
 	  __progname);
@@ -53,7 +53,7 @@ static void usage(void)
   print_status ("-v - Verbose mode. Displays filename as its being processed");
   print_status ("-r - Recursive mode");
 
-  print_status ("-s - Silent mode; all errors are supressed");
+  print_status ("-s - Silent mode; all errors are suppressed");
   print_status ("-b - Uses only the bare name of files; all path information omitted");
   print_status ("-l - Uses relative paths for filenames");
   print_status ("-c - Prints output in CSV format");

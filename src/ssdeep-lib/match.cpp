@@ -1,7 +1,7 @@
 // ssdeep
 // (C) Copyright 2012 Kyrus
 //
-// $Id: match.cpp 211 2014-05-14 18:20:23Z jessekornblum $
+// $Id$
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

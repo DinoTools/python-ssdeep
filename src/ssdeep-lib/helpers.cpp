@@ -2,7 +2,7 @@
 // Copyright (C) 2012 Kyrus
 // Copyright (C) 2006 ManTech International Corporation
 //
-// $Id: helpers.cpp 184 2013-07-10 05:24:26Z jessekornblum $
+// $Id$
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

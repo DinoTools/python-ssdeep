@@ -12,7 +12,7 @@
  *
  */
 
-// $Id: cycles.cpp 184 2013-07-10 05:24:26Z jessekornblum $
+// $Id$
 
 #include "ssdeep.h"
 

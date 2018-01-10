@@ -1,4 +1,4 @@
-// $Id: engine.cpp 211 2014-05-14 18:20:23Z jessekornblum $ 
+// $Id$ 
 
 #include "main.h"
 #include "ssdeep.h"
@@ -63,7 +63,7 @@ int hash_file(state *s, TCHAR *fn) {
 
 #ifdef WIN32  
   TCHAR expanded_fn[SSDEEP_PATH_MAX];
-  if (not expanded_path(fn)) {
+  if (not expanded_path(fn) && !(s->mode & mode_relative)) {
     _sntprintf(expanded_fn, 
 	       SSDEEP_PATH_MAX,
 	       _TEXT("\\\\?\\%s"), 
