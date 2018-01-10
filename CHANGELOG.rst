@@ -6,6 +6,14 @@ Changelog
 
 .. note:: This version is not yet released and is under development.
 
+3.3 (2018-01-10)
+~~~~~~~~~~~~~~~~
+
+* Update ssdeep lib to 2.14.1
+* Fix issues with Travis CI
+* Add additional CI test with Python 3.6
+* Build docs during CI builds
+* Remove deprecated PKGBUILD
 
 3.2 (2016-11-27)
 ~~~~~~~~~~~~~~~~
