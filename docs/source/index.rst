@@ -40,7 +40,7 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
-.. _ssdeep by Jesse Kornblum: http://ssdeep.sourceforge.net/
+.. _ssdeep by Jesse Kornblum: https://ssdeep-project.github.io/ssdeep/
 .. _Denis Bilenko on bitbucket: https://bitbucket.org/denis/ssdeep
 .. _github: https://github.com/DinoTools/python-ssdeep
-.. _Dinotools: http://www.dinotools.org/
+.. _Dinotools: https://www.dinotools.org/
