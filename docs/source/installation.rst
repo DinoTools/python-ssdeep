@@ -300,8 +300,8 @@ Build and install Python module.
 
     $ BUILD_LIB=1 pip3 install ssdeep
     
-    Install on Fedora 27
--------------------
+Install on Fedora 27
+--------------------
 
 Python 2
 ~~~~~~~~
@@ -321,8 +321,8 @@ Build and install Python module.
 
     $ sudo pip install ssdeep
     
-   Python 3
-   ~~~~~~~~
+Python 3
+~~~~~~~~
    
 
 **Use lib from Fedora repository**
