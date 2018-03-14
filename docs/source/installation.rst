@@ -299,3 +299,42 @@ Build and install Python module.
 .. code-block:: console
 
     $ BUILD_LIB=1 pip3 install ssdeep
+
+Install on Fedora 27
+--------------------
+
+Python 2
+~~~~~~~~
+
+**Use lib from Fedora repository**
+
+Install required packages.
+
+.. code-block:: console
+
+    $ sudo dnf groupinstall "Development Tools"
+    $ sudo dnf install libffi-devel python-devel python-pip ssdeep-devel ssdeep-libs
+
+Build and install Python module.
+
+.. code-block:: console
+
+    $ sudo pip install ssdeep
+
+Python 3
+~~~~~~~~
+
+**Use lib from Fedora repository**
+
+Install required packages.
+
+.. code-block:: console
+
+    $ sudo dnf groupinstall "Development Tools"
+    $ sudo dnf install libffi-devel python3-devel python3-pip ssdeep-devel ssdeep-libs
+
+Build and install Python module.
+
+.. code-block:: console
+
+    $ sudo pip3 install ssdeep
