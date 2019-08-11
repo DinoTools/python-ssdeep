@@ -1,0 +1,214 @@
+### CentOS 7
+kind: pipeline
+name: CentOS 7, Python2, builtin
+
+steps:
+- name: test
+  image: centos:7
+  commands:
+  - yum -q -y groupinstall "Development Tools"
+  - yum -q -y install epel-release
+  - |
+    yum -q -y install libffi-devel \
+      python-devel \
+      python-pip \
+      pytest \
+      automake \
+      autoconf \
+      libtool
+  - BUILD_LIB=1 pip install .
+  # - pip install pytest
+  - py.test
+
+---
+kind: pipeline
+name: CentOS 7, Python2, system
+
+steps:
+- name: test
+  image: centos:7
+  commands:
+  - yum -q -y groupinstall "Development Tools"
+  - yum -q -y install epel-release
+  - |
+    yum -q -y install libffi-devel \
+      libffi-devel \
+      python-devel \
+      python-pip \
+      pytest \
+      ssdeep-devel \
+      ssdeep-lib
+  - BUILD_LIB=0 pip install .
+  # - pip install pytest
+  - py.test
+
+---
+### Debian 8
+kind: pipeline
+name: Debian 8, Python2, builtin
+
+steps:
+- name: test
+  image: debian:8
+  commands:
+  - apt-get update
+  - apt-get install -y build-essential libffi-dev python python-dev python-pip python-pytest automake autoconf libtool
+  - BUILD_LIB=1 pip install .
+  # - pip install pytest
+  - py.test
+
+---
+kind: pipeline
+name: Debian 8, Python2, system
+
+steps:
+- name: test
+  image: debian:8
+  commands:
+  - apt-get update
+  - apt-get install -y build-essential libffi-dev python python-dev python-pip python-pytest libfuzzy-dev
+  - BUILD_LIB=0 pip install .
+  # - pip install pytest
+  - py.test
+
+---
+kind: pipeline
+name: Debian 8, Python3, builtin
+
+steps:
+- name: test
+  image: debian:8
+  commands:
+  - apt-get update
+  - apt-get install -y build-essential libffi-dev python3 python3-dev python3-pip python3-pytest automake autoconf libtool
+  - BUILD_LIB=1 pip3 install .
+  # - pip3 install pytest
+  - py.test-3
+
+---
+kind: pipeline
+name: Debian 8, Python3, system
+
+steps:
+- name: test
+  image: debian:8
+  commands:
+  - apt-get update
+  - apt-get install -y build-essential libffi-dev python3 python3-dev python3-pip python3-pytest libfuzzy-dev
+  - BUILD_LIB=0 pip3 install .
+  # - pip3 install pytest
+  - py.test-3
+
+---
+### Debian 9
+kind: pipeline
+name: Debian 9, Python2, builtin
+
+steps:
+- name: test
+  image: debian:9
+  commands:
+  - apt-get update
+  - apt-get install -y build-essential libffi-dev python python-dev python-pip python-pytest automake autoconf libtool
+  - BUILD_LIB=1 pip install .
+  - pip install pytest
+  - py.test
+
+---
+kind: pipeline
+name: Debian 9, Python2, system
+
+steps:
+- name: test
+  image: debian:9
+  commands:
+  - apt-get update
+  - apt-get install -y build-essential libffi-dev python python-dev python-pip python-pytest libfuzzy-dev
+  - BUILD_LIB=0 pip install .
+  # - pip install pytest
+  - py.test
+
+---
+kind: pipeline
+name: Debian 9, Python3, builtin
+
+steps:
+- name: test
+  image: debian:9
+  commands:
+  - apt-get update
+  - apt-get install -y build-essential libffi-dev python3 python3-dev python3-pip python3-pytest automake autoconf libtool
+  - BUILD_LIB=1 pip3 install .
+  #- pip3 install pytest
+  - py.test-3
+
+---
+kind: pipeline
+name: Debian 9, Python3, system
+
+steps:
+- name: test
+  image: debian:9
+  commands:
+  - apt-get update
+  - apt-get install -y build-essential libffi-dev python3 python3-dev python3-pip python3-pytest libfuzzy-dev
+  - BUILD_LIB=0 pip3 install .
+  # - pip3 install pytest
+  - py.test-3
+
+---
+### Ubuntu 16.04
+kind: pipeline
+name: Ubuntu 16.04, Python2, builtin
+
+steps:
+- name: test
+  image: ubuntu:16.04
+  commands:
+  - apt-get update
+  - apt-get install -y build-essential libffi-dev python python-dev python-pip python-pytest automake autoconf libtool
+  - BUILD_LIB=1 pip install .
+  # - pip install pytest
+  - py.test
+
+---
+kind: pipeline
+name: Ubuntu 16.04, Python2, system
+
+steps:
+- name: test
+  image: ubuntu:16.04
+  commands:
+  - apt-get update
+  - apt-get install -y build-essential libffi-dev python python-dev python-pip python-pytest libfuzzy-dev
+  - BUILD_LIB=0 pip install .
+  # - pip install pytest
+  - py.test
+
+---
+kind: pipeline
+name: Ubuntu 16.04, Python3, builtin
+
+steps:
+- name: test
+  image: ubuntu:16.04
+  commands:
+  - apt-get update
+  - apt-get install -y build-essential libffi-dev python3 python3-dev python3-pip python3-pytest automake autoconf libtool
+  - BUILD_LIB=1 pip3 install .
+  # - pip3 install pytest
+  - py.test-3
+
+---
+kind: pipeline
+name: Ubuntu 16.04, Python3, system
+
+steps:
+- name: test
+  image: ubuntu:16.04
+  commands:
+  - apt-get update
+  - apt-get install -y build-essential libffi-dev python3 python3-dev python3-pip Python3-pytest libfuzzy-dev
+  - BUILD_LIB=0 pip3 install .
+  # - pip3 install pytest
+  - py.test-3
