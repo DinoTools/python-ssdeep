@@ -4,6 +4,8 @@ import os
 import subprocess
 import sys
 from distutils.command.build import build
+import setuptools
+from pkg_resources import parse_version
 from setuptools import setup, find_packages
 from setuptools.command.install import install
 
@@ -94,6 +96,15 @@ with open(os.path.join(src_dir, "ssdeep", "__about__.py")) as f:
 with open(os.path.join(base_dir, "README.rst")) as f:
     long_description = f.read()
 
+# On some systems(e.g. Debian 8, CentOS 7) the setuptools package is very old.
+# We try to install an old version of pytest-runner without setuptools_scm dependency.
+# See: https://github.com/pytest-dev/pytest-runner/blob/master/CHANGES.rst
+if parse_version(setuptools.__version__) < parse_version("12"):
+    setup_requires = ["pytest-runner<2.4"]
+else:
+    setup_requires = ["pytest-runner"]
+
+
 setup(
     name=about["__title__"],
     version=about["__version__"],
@@ -130,9 +141,8 @@ setup(
     ],
     setup_requires=[
         "cffi>=0.8.6",
-        "pytest-runner",
         "six>=1.4.1",
-    ],
+    ] + setup_requires,
     tests_require=[
         "pytest",
     ],
