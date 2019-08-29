@@ -1,3 +1,96 @@
+---
+### Python 2.7
+kind: pipeline
+name: Python 2.7
+
+steps:
+- name: test
+  image: registry.dinotools.org/docker-ci/python:2.7
+  commands:
+  - apt-get update
+  - apt-get install -y build-essential libffi-dev libfuzzy-dev
+  - . /opt/python/venv/bin/activate
+  - python --version
+  - pip install tox
+  - BUILD_LIB=0 tox --recreate -vvv -e py27
+
+---
+### Python 3.5
+kind: pipeline
+name: Python 3.5
+
+steps:
+- name: test
+  image: registry.dinotools.org/docker-ci/python:3.5
+  commands:
+  - apt-get update
+  - apt-get install -y build-essential libffi-dev libfuzzy-dev
+  - . /opt/python/venv/bin/activate
+  - python --version
+  - pip install tox
+  - BUILD_LIB=0 tox --recreate -vvv -e py35
+
+---
+### Python 3.6
+kind: pipeline
+name: Python 3.6
+
+steps:
+- name: test
+  image: registry.dinotools.org/docker-ci/python:3.6
+  commands:
+  - apt-get update
+  - apt-get install -y build-essential libffi-dev libfuzzy-dev
+  - . /opt/python/venv/bin/activate
+  - python --version
+  - pip install tox
+  - BUILD_LIB=0 tox --recreate -vvv -e py36
+
+---
+### Python 3.7
+kind: pipeline
+name: Python 3.7
+
+steps:
+- name: test
+  image: registry.dinotools.org/docker-ci/python:3.7
+  commands:
+  - apt-get update
+  - apt-get install -y build-essential libffi-dev libfuzzy-dev
+  - . /opt/python/venv/bin/activate
+  - python --version
+  - pip install tox
+  - BUILD_LIB=0 tox --recreate -vvv -e py37
+
+---
+### Python 3.7
+kind: pipeline
+name: Python 3.7 - Docs
+
+steps:
+- name: test
+  image: registry.dinotools.org/docker-ci/python:3.7
+  commands:
+  - . /opt/python/venv/bin/activate
+  - python --version
+  - pip install tox
+  - BUILD_LIB=0 tox --recreate -vvv -e docs
+
+---
+### Python 3.7
+kind: pipeline
+name: Python 3.7 - flake8
+
+steps:
+- name: test
+  image: registry.dinotools.org/docker-ci/python:3.7
+  commands:
+  - . /opt/python/venv/bin/activate
+  - python --version
+  - pip install flake8
+  - flake8 --ignore F401 src/ssdeep
+
+---
 ### CentOS 7
 kind: pipeline
 name: CentOS 7, Python2, builtin
