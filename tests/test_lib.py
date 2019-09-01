@@ -73,6 +73,7 @@ class TestHashClass(object):
         obj = ssdeep.Hash()
         obj.update("Also called fuzzy hashes, ")
         new_obj = obj.copy()
+        assert isinstance(new_obj, ssdeep.Hash)
 
         res = obj.digest()
         new_res = new_obj.digest()
@@ -107,6 +108,7 @@ class TestPseudoHashClass(object):
         obj = ssdeep.PseudoHash()
         obj.update("Also called fuzzy hashes, ")
         new_obj = obj.copy()
+        assert isinstance(new_obj, ssdeep.PseudoHash)
 
         res = obj.digest()
         new_res = new_obj.digest()
