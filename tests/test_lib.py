@@ -103,6 +103,31 @@ class TestHashClass(object):
 
 
 class TestPseudoHashClass(object):
+    def test_copy(self):
+        obj = ssdeep.PseudoHash()
+        obj.update("Also called fuzzy hashes, ")
+        new_obj = obj.copy()
+
+        res = obj.digest()
+        new_res = new_obj.digest()
+        assert res == "3:AXGBicFlF:AXGHR"
+        assert new_res == "3:AXGBicFlF:AXGHR"
+
+        # Update only original object
+        obj.update("Ctph can match inputs that have homologies.")
+
+        res = obj.digest()
+        new_res = new_obj.digest()
+        assert res == "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C"
+        assert new_res == "3:AXGBicFlF:AXGHR"
+
+        # Update only new object
+        new_obj.update("Ctph can match inputs that have homologies.")
+        res = obj.digest()
+        new_res = new_obj.digest()
+        assert res == "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C"
+        assert new_res == "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C"
+
     def test_update(self):
         obj = ssdeep.PseudoHash()
         obj.update("Also called fuzzy hashes, ")
