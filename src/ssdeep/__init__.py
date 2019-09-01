@@ -130,6 +130,18 @@ class PseudoHash(object):
     def __init__(self):
         self._data = b""
 
+    def copy(self):
+        """
+        Create a copy of this hash object.
+
+        :return: Return a copy of the hash object.
+        :rtype: PseudoHash
+        :raises InternalError: If the lib returns an internal error
+        """
+        new = PseudoHash()
+        new.update(self._data)
+        return new
+
     def update(self, buf, encoding="utf-8"):
         """
          Feed the data contained in the given buffer to the state.
