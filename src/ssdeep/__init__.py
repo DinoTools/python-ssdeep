@@ -44,6 +44,25 @@ class Hash(object):
         if self._state == ffi.NULL:
             raise InternalError("Unable to create state object")
 
+    def copy(self):
+        """
+        Create a copy of this hash object.
+
+        :return: Return a copy of the hash object.
+        :rtype: Hash
+        :raises InternalError: If the lib returns an internal error
+        """
+        if self._state == ffi.NULL:
+            raise InternalError("State object is NULL")
+
+        newstate = binding.lib.fuzzy_clone(self._state)
+        if newstate == ffi.NULL:
+            raise InternalError("cloning of fuzzy state object failed")
+
+        new = Hash.__new__(Hash)
+        new._state = newstate
+        return new
+
     def update(self, buf, encoding="utf-8"):
         """
          Feed the data contained in the given buffer to the state.
