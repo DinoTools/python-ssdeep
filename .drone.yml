@@ -68,13 +68,15 @@ kind: pipeline
 name: Python 3.7 - Docs
 
 steps:
-- name: test
+- name: sphinx
   image: registry.dinotools.org/docker-ci/python:3.7
   commands:
   - . /opt/python/venv/bin/activate
   - python --version
-  - pip install tox
-  - BUILD_LIB=0 tox --recreate -vvv -e docs
+  - pip install sphinx mock doc8
+  - (cd docs/source && sphinx-build -W -b html . ../_build/html)
+  - (cd docs/source && sphinx-build -W -b latex . ../_build/latex)
+  - doc8 --verbose --allow-long-titles --max-line-length=9999 README.rst CHANGELOG.rst CONTRIBUTING.rst docs/source --ignore-path docs/_build/
 
 ---
 ### Python 3.7
