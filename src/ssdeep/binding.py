@@ -11,6 +11,11 @@ cdef = """
 
     struct fuzzy_state;
     struct fuzzy_state *fuzzy_new(void);
+
+    struct fuzzy_state *fuzzy_clone(
+        const struct fuzzy_state *
+    );
+
     int fuzzy_update(
         struct fuzzy_state *,
         const unsigned char *,
@@ -62,6 +67,7 @@ source = """
     struct fuzzy_state {};
     const long FUZZY_FLAG_ELIMSEQ = 0;
     const long FUZZY_FLAG_NOTRUNC = 0;
+    int (*fuzzy_clone)(const struct fuzzy_state *) = NULL;
     int (*fuzzy_digest)(
         const struct fuzzy_state *,
         char *,
@@ -91,6 +97,7 @@ CONDITIONAL_NAMES = {
     "ssdeep_HAS_STATEFUL_HASHING": (
         "FUZZY_FLAG_ELIMSEQ",
         "FUZZY_FLAG_NOTRUNC",
+        "fuzzy_clone",
         "fuzzy_digest",
         "fuzzy_free",
         "fuzzy_new",

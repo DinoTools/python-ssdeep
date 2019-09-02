@@ -69,6 +69,32 @@ class TestFunctions(object):
 
 
 class TestHashClass(object):
+    def test_copy(self):
+        obj = ssdeep.Hash()
+        obj.update("Also called fuzzy hashes, ")
+        new_obj = obj.copy()
+        assert isinstance(new_obj, ssdeep.Hash)
+
+        res = obj.digest()
+        new_res = new_obj.digest()
+        assert res == "3:AXGBicFlF:AXGHR"
+        assert new_res == "3:AXGBicFlF:AXGHR"
+
+        # Update only original object
+        obj.update("Ctph can match inputs that have homologies.")
+
+        res = obj.digest()
+        new_res = new_obj.digest()
+        assert res == "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C"
+        assert new_res == "3:AXGBicFlF:AXGHR"
+
+        # Update only new object
+        new_obj.update("Ctph can match inputs that have homologies.")
+        res = obj.digest()
+        new_res = new_obj.digest()
+        assert res == "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C"
+        assert new_res == "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C"
+
     def test_update(self):
         obj = ssdeep.Hash()
         obj.update("Also called fuzzy hashes, Ctph can match inputs that have homologies.")
@@ -78,6 +104,32 @@ class TestHashClass(object):
 
 
 class TestPseudoHashClass(object):
+    def test_copy(self):
+        obj = ssdeep.PseudoHash()
+        obj.update("Also called fuzzy hashes, ")
+        new_obj = obj.copy()
+        assert isinstance(new_obj, ssdeep.PseudoHash)
+
+        res = obj.digest()
+        new_res = new_obj.digest()
+        assert res == "3:AXGBicFlF:AXGHR"
+        assert new_res == "3:AXGBicFlF:AXGHR"
+
+        # Update only original object
+        obj.update("Ctph can match inputs that have homologies.")
+
+        res = obj.digest()
+        new_res = new_obj.digest()
+        assert res == "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C"
+        assert new_res == "3:AXGBicFlF:AXGHR"
+
+        # Update only new object
+        new_obj.update("Ctph can match inputs that have homologies.")
+        res = obj.digest()
+        new_res = new_obj.digest()
+        assert res == "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C"
+        assert new_res == "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C"
+
     def test_update(self):
         obj = ssdeep.PseudoHash()
         obj.update("Also called fuzzy hashes, ")
