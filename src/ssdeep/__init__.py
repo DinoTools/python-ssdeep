@@ -42,6 +42,15 @@ class BaseHash(object):
         size, _, _ = self.digest().partition(":")
         return int(size)
 
+    @property
+    def name(self):
+        """
+        The canonical name of this hash
+
+        :return: ssdeep
+        """
+        return "ssdeep"
+
     def digest(self, elimseq=False, notrunc=False):
         raise NotImplementedError
 
@@ -62,10 +71,6 @@ class Hash(BaseHash):
         self._state = binding.lib.fuzzy_new()
         if self._state == ffi.NULL:
             raise InternalError("Unable to create state object")
-
-    @property
-    def name(self):
-        return "ssdeep"
 
     def copy(self):
         """
@@ -152,10 +157,6 @@ class PseudoHash(BaseHash):
     """
     def __init__(self):
         self._data = b""
-
-    @property
-    def name(self):
-        return "ssdeep"
 
     def copy(self):
         """
