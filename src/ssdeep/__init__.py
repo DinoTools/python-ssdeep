@@ -44,6 +44,10 @@ class Hash(object):
         if self._state == ffi.NULL:
             raise InternalError("Unable to create state object")
 
+    @property
+    def name(self):
+        return "ssdeep"
+
     def copy(self):
         """
         Create a copy of this hash object.
@@ -129,6 +133,10 @@ class PseudoHash(object):
     """
     def __init__(self):
         self._data = b""
+
+    @property
+    def name(self):
+        return "ssdeep"
 
     def copy(self):
         """
