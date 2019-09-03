@@ -97,8 +97,10 @@ class TestHashClass(object):
 
     def test_hashlib(self):
         obj = ssdeep.Hash()
-
         assert obj.name == "ssdeep"
+
+        obj.update("Ctph can match inputs that have homologies.")
+        assert obj.block_size == 3
 
     def test_update(self):
         obj = ssdeep.Hash()
@@ -137,8 +139,10 @@ class TestPseudoHashClass(object):
 
     def test_hashlib(self):
         obj = ssdeep.PseudoHash()
-
         assert obj.name == "ssdeep"
+
+        obj.update("Ctph can match inputs that have homologies.")
+        assert obj.block_size == 3
 
     def test_update(self):
         obj = ssdeep.PseudoHash()

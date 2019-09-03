@@ -27,7 +27,26 @@ class InternalError(BaseError):
     pass
 
 
-class Hash(object):
+class BaseHash(object):
+    """
+    Base class used to implement some general functions for the Hash and PseudoHash class
+    """
+    @property
+    def block_size(self):
+        """
+        The block size used to calculate the hash.
+        This depends on the length of the source string.
+
+        :return: block size
+        """
+        size, _, _ = self.digest().partition(":")
+        return int(size)
+
+    def digest(self, elimseq=False, notrunc=False):
+        raise NotImplementedError
+
+
+class Hash(BaseHash):
     """
     Hashlib like object. It is only supported with ssdeep/libfuzzy >= 2.10.
 
@@ -124,7 +143,7 @@ class Hash(object):
             binding.lib.fuzzy_free(self._state)
 
 
-class PseudoHash(object):
+class PseudoHash(BaseHash):
     """
     Hashlib like object. Use this class only if Hash() isn't supported by your
     ssdeep/libfuzzy library. This class stores the provided data in memory, so
