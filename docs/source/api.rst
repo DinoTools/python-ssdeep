@@ -7,10 +7,12 @@ Classes
 .. autoclass:: ssdeep.Hash
     :members:
     :undoc-members:
+    :inherited-members:
 
 .. autoclass:: ssdeep.PseudoHash
     :members:
     :undoc-members:
+    :inherited-members:
 
 Functions
 ---------
