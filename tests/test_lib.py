@@ -95,6 +95,13 @@ class TestHashClass(object):
         assert res == "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C"
         assert new_res == "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C"
 
+    def test_hashlib(self):
+        obj = ssdeep.Hash()
+        assert obj.name == "ssdeep"
+
+        obj.update("Ctph can match inputs that have homologies.")
+        assert obj.block_size == 3
+
     def test_update(self):
         obj = ssdeep.Hash()
         obj.update("Also called fuzzy hashes, Ctph can match inputs that have homologies.")
@@ -129,6 +136,13 @@ class TestPseudoHashClass(object):
         new_res = new_obj.digest()
         assert res == "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C"
         assert new_res == "3:AXGBicFlgVNhBGcL6wCrFQEv:AXGHsNhxLsr2C"
+
+    def test_hashlib(self):
+        obj = ssdeep.PseudoHash()
+        assert obj.name == "ssdeep"
+
+        obj.update("Ctph can match inputs that have homologies.")
+        assert obj.block_size == 3
 
     def test_update(self):
         obj = ssdeep.PseudoHash()
