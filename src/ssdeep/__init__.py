@@ -29,7 +29,8 @@ class InternalError(BaseError):
 
 class BaseHash(object):
     """
-    Base class used to implement some general functions for the Hash and PseudoHash class
+    Base class used to implement some general functions for the Hash and
+    PseudoHash class.
     """
     @property
     def block_size(self):
