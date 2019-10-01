@@ -6,6 +6,16 @@ Changelog
 
 .. note:: This version is not yet released and is under development.
 
+3.4 (2019-10-01)
+~~~~~~~~~~~~~~~~
+
+* Update documentation
+* Replace Jenkins and Travis CI with Drone CI
+* Add new copy() function to Hash() and PseudoHash() class
+* Add new attributes to Hash() and PseudoHash() class
+  * name
+  * block_size
+
 3.3 (2018-01-10)
 ~~~~~~~~~~~~~~~~
 
