@@ -103,11 +103,13 @@ CONDITIONAL_NAMES = {
     )
 }
 
+libraries = ["fuzzy"]
+
 ffi = cffi.FFI()
 ffi.set_source(
     "ssdeep._libfuzzy",
     source,
-    extra_link_args=["-lfuzzy"],
+    libraries=libraries,
 )
 ffi.cdef(cdef)
 
