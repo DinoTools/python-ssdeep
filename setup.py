@@ -58,36 +58,6 @@ class build_clib(_build_clib):
             if e.errno != errno.EEXIST:
                 raise
 
-        configure_cmd = os.path.abspath(os.path.relpath("src/ssdeep-lib/configure"))
-
-        configure_flags = [
-            "--disable-shared",
-            "--enable-static",
-            "--disable-debug",
-            "--disable-dependency-tracking",
-            "--with-pic",
-        ]
-
-        returncode = subprocess.call(
-            [configure_cmd]
-            + configure_flags
-            + ["--prefix", os.path.abspath(self.build_clib)],
-            cwd="src/ssdeep-lib"
-        )
-        returncode = subprocess.call(
-            ["make"],
-            cwd="src/ssdeep-lib"
-        )
-        returncode = subprocess.call(
-            ["make", "install"],
-            cwd="src/ssdeep-lib"
-        )
-        if returncode == 0:
-            return
-
-        print("Failed while building ssdeep lib with configure and make.")
-        print("Retry with autoreconf ...")
-
         # libtoolize: Install required files for automake
         returncode = subprocess.call(
             "(cd src/ssdeep-lib && libtoolize && autoreconf --force)",
@@ -101,6 +71,17 @@ class build_clib(_build_clib):
             )
             if returncode != 0:
                 sys.exit("Failed to reconfigure the project build.")
+
+
+        configure_cmd = os.path.abspath(os.path.relpath("src/ssdeep-lib/configure"))
+
+        configure_flags = [
+            "--disable-shared",
+            "--enable-static",
+            "--disable-debug",
+            "--disable-dependency-tracking",
+            "--with-pic",
+        ]
 
         returncode = subprocess.call(
             [configure_cmd]
