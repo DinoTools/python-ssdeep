@@ -21,13 +21,7 @@ try:
 except ImportError:
     sphinx_rtd_theme = None
 
-MOCK_MODULES = ['cffi', 'six']
-for mod_name in MOCK_MODULES:
-    try:
-        __import__(mod_name)
-    except:
-        import mock
-        sys.modules[mod_name] = mock.MagicMock()
+autodoc_mock_imports = ["cffi", "six", "ssdeep._libfuzzy"]
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
