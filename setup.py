@@ -6,7 +6,7 @@ import sys
 import setuptools
 from distutils.sysconfig import get_config_vars
 from pkg_resources import parse_version
-from setuptools import Distribution, setup
+from setuptools import Distribution as _Distribution, setup
 from setuptools.command.build_ext import build_ext as _build_ext
 import errno
 
@@ -24,7 +24,7 @@ if os.environ.get("BUILD_LIB") == "1":
     use_system_lib = False
 
 
-class build_clib(_build_clib):
+class BuildClib(_build_clib):
     def build_libraries(self, libraries):
         raise Exception("build_libraries")
 
@@ -72,7 +72,6 @@ class build_clib(_build_clib):
             if returncode != 0:
                 sys.exit("Failed to reconfigure the project build.")
 
-
         configure_cmd = os.path.abspath(os.path.relpath("src/ssdeep-lib/configure"))
 
         configure_flags = [
@@ -102,7 +101,7 @@ class build_clib(_build_clib):
             sys.exit("Failed while building ssdeep lib.")
 
 
-class build_ext(_build_ext):
+class BuildExt(_build_ext):
     def run(self):
         if self.distribution.has_c_libraries():
             build_clib = self.get_finalized_command("build_clib")
@@ -125,7 +124,7 @@ class build_ext(_build_ext):
         return _build_ext.run(self)
 
 
-class Distribution(Distribution):
+class Distribution(_Distribution):
     def has_c_libraries(self):
         return not use_system_lib
 
@@ -209,6 +208,9 @@ setup(
     include_package_data=True,
     cffi_modules=["src/ssdeep/_build.py:ffi"],
     package_dir={"": "src"},
-    cmdclass={"build_clib": build_clib, "build_ext": build_ext},
+    cmdclass={
+        "build_clib": BuildClib,
+        "build_ext": BuildExt
+    },
     distclass=Distribution,
 )
