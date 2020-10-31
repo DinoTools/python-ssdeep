@@ -11,10 +11,7 @@ from ssdeep.__about__ import (
     __author__, __copyright__, __email__, __license__, __summary__, __title__,
     __uri__, __version__
 )
-from ssdeep.binding import Binding
-
-binding = Binding()
-ffi = binding.ffi
+from ssdeep._libfuzzy import ffi, lib
 
 
 class BaseError(Exception):
@@ -66,10 +63,10 @@ class Hash(BaseHash):
     def __init__(self):
         self._state = ffi.NULL
 
-        if not hasattr(binding.lib, "fuzzy_new"):
+        if not hasattr(lib, "fuzzy_new"):
             raise NotImplementedError("Only supported with ssdeep >= 2.10")
 
-        self._state = binding.lib.fuzzy_new()
+        self._state = lib.fuzzy_new()
         if self._state == ffi.NULL:
             raise InternalError("Unable to create state object")
 
@@ -84,7 +81,7 @@ class Hash(BaseHash):
         if self._state == ffi.NULL:
             raise InternalError("State object is NULL")
 
-        newstate = binding.lib.fuzzy_clone(self._state)
+        newstate = lib.fuzzy_clone(self._state)
         if newstate == ffi.NULL:
             raise InternalError("cloning of fuzzy state object failed")
 
@@ -115,8 +112,8 @@ class Hash(BaseHash):
                 "'%r'" % type(buf)
             )
 
-        if binding.lib.fuzzy_update(self._state, buf, len(buf)) != 0:
-            binding.lib.fuzzy_free(self._state)
+        if lib.fuzzy_update(self._state, buf, len(buf)) != 0:
+            lib.fuzzy_free(self._state)
             raise InternalError("Invalid state object")
 
     def digest(self, elimseq=False, notrunc=False):
@@ -135,18 +132,18 @@ class Hash(BaseHash):
         if self._state == ffi.NULL:
             raise InternalError("State object is NULL")
 
-        flags = (binding.lib.FUZZY_FLAG_ELIMSEQ if elimseq else 0) | \
-                (binding.lib.FUZZY_FLAG_NOTRUNC if notrunc else 0)
+        flags = (lib.FUZZY_FLAG_ELIMSEQ if elimseq else 0) | \
+                (lib.FUZZY_FLAG_NOTRUNC if notrunc else 0)
 
-        result = ffi.new("char[]", binding.lib.FUZZY_MAX_RESULT)
-        if binding.lib.fuzzy_digest(self._state, result, flags) != 0:
+        result = ffi.new("char[]", lib.FUZZY_MAX_RESULT)
+        if lib.fuzzy_digest(self._state, result, flags) != 0:
             raise InternalError("Function returned an unexpected error code")
 
         return ffi.string(result).decode("ascii")
 
     def __del__(self):
         if self._state != ffi.NULL:
-            binding.lib.fuzzy_free(self._state)
+            lib.fuzzy_free(self._state)
 
 
 class PseudoHash(BaseHash):
@@ -241,7 +238,7 @@ def compare(sig1, sig2):
             "'%r'" % type(sig2)
         )
 
-    res = binding.lib.fuzzy_compare(sig1, sig2)
+    res = lib.fuzzy_compare(sig1, sig2)
     if res < 0:
         raise InternalError("Function returned an unexpected error code")
 
@@ -270,8 +267,8 @@ def hash(buf, encoding="utf-8"):
         )
 
     # allocate memory for result
-    result = ffi.new("char[]", binding.lib.FUZZY_MAX_RESULT)
-    if binding.lib.fuzzy_hash_buf(buf, len(buf), result) != 0:
+    result = ffi.new("char[]", lib.FUZZY_MAX_RESULT)
+    if lib.fuzzy_hash_buf(buf, len(buf), result) != 0:
         raise InternalError("Function returned an unexpected error code")
 
     return ffi.string(result).decode("ascii")
@@ -298,8 +295,8 @@ def hash_from_file(filename):
     if not os.access(filename, os.R_OK):
         raise IOError("File is not readable")
 
-    result = ffi.new("char[]", binding.lib.FUZZY_MAX_RESULT)
-    if binding.lib.fuzzy_hash_filename(filename.encode("utf-8"), result) != 0:
+    result = ffi.new("char[]", lib.FUZZY_MAX_RESULT)
+    if lib.fuzzy_hash_filename(filename.encode("utf-8"), result) != 0:
         raise InternalError("Function returned an unexpected error code")
 
     return ffi.string(result).decode("ascii")

@@ -3,84 +3,131 @@ import glob
 import os
 import subprocess
 import sys
-from distutils.command.build import build
 import setuptools
+from distutils.sysconfig import get_config_vars
 from pkg_resources import parse_version
-from setuptools import setup, find_packages
-from setuptools.command.install import install
+from setuptools import Distribution, setup
+from setuptools.command.build_ext import build_ext as _build_ext
+import errno
+
+try:
+    from setuptools.command.build_clib import build_clib as _build_clib
+except ImportError:
+    from distutils.command.build_clib import build_clib as _build_clib
 
 base_dir = os.path.dirname(__file__)
 src_dir = os.path.join(base_dir, "src")
-import sys
-sys.path.insert(0, src_dir)
+# sys.path.insert(0, base_dir)
 
 use_system_lib = True
 if os.environ.get("BUILD_LIB") == "1":
     use_system_lib = False
 
 
-class CFFIBuild(build):
-    def finalize_options(self):
-        self.distribution.ext_modules = get_ext_modules()
-        build.finalize_options(self)
+class build_clib(_build_clib):
+    def build_libraries(self, libraries):
+        raise Exception("build_libraries")
 
+    def check_library_list(self, libraries):
+        raise Exception("check_library_list")
 
-class CFFIInstall(install):
-    def finalize_options(self):
-        self.distribution.ext_modules = get_ext_modules()
-        install.finalize_options(self)
+    def get_library_names(self):
+        return ["fuzzy"]
 
+    def get_source_files(self):
+        files = glob.glob(os.path.relpath("src/ssdeep-lib/*"))
+        files += glob.glob(os.path.relpath("src/ssdeep-lib/m4/*"))
+        return files
 
-def build_ssdeep():
-    returncode = subprocess.call(
-        "(cd src/ssdeep-lib && sh configure && make)",
-        shell=True
-    )
-    if returncode == 0:
-        return
+    def run(self):
+        if use_system_lib:
+            return
 
-    print("Failed while building ssdeep lib with configure and make.")
-    print("Retry with autoreconf ...")
+        build_env = {
+            key: val
+            for key, val in get_config_vars().items()
+            if key in ("LDFLAGS", "CFLAGS", "CC", "CCSHARED", "LDSHARED")
+            and key not in os.environ
+        }
+        os.environ.update(build_env)
 
-    # libtoolize: Install required files for automake
-    returncode = subprocess.call(
-        "(cd src/ssdeep-lib && libtoolize && autoreconf --force)",
-        shell=True
-    )
-    if returncode != 0:
-        # try harder
+        build_temp = os.path.abspath(self.build_temp)
+        try:
+            os.makedirs(build_temp)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
+
+        # libtoolize: Install required files for automake
         returncode = subprocess.call(
-            "(cd src/ssdeep-lib && automake --add-missing && autoreconf --force)",
+            "(cd src/ssdeep-lib && libtoolize && autoreconf --force)",
             shell=True
         )
         if returncode != 0:
-            sys.exit("Failed to reconfigure the project build.")
-
-    returncode = subprocess.call(
-        "(cd src/ssdeep-lib && sh configure && make)",
-        shell=True
-    )
-
-    if returncode != 0:
-        sys.exit("Failed while building ssdeep lib.")
+            # try harder
+            returncode = subprocess.call(
+                "(cd src/ssdeep-lib && automake --add-missing && autoreconf --force)",
+                shell=True
+            )
+            if returncode != 0:
+                sys.exit("Failed to reconfigure the project build.")
 
 
-def get_ext_modules():
-    from ssdeep.binding import Binding
-    if use_system_lib:
-        binding = Binding()
-    else:
-        build_ssdeep()
-        binding = Binding(
-            extra_objects=get_objects(),
-            include_dirs=["./src/ssdeep-lib/"],
-            libraries=[]
+        configure_cmd = os.path.abspath(os.path.relpath("src/ssdeep-lib/configure"))
+
+        configure_flags = [
+            "--disable-shared",
+            "--enable-static",
+            "--disable-debug",
+            "--disable-dependency-tracking",
+            "--with-pic",
+        ]
+
+        returncode = subprocess.call(
+            [configure_cmd]
+            + configure_flags
+            + ["--prefix", os.path.abspath(self.build_clib)],
+            cwd="src/ssdeep-lib"
         )
-    binding.verify()
-    ext_modules = [
-        binding.ffi.verifier.get_extension()
-    ]
-    return ext_modules
+        returncode = subprocess.call(
+            ["make"],
+            cwd="src/ssdeep-lib"
+        )
+        returncode = subprocess.call(
+            ["make", "install"],
+            cwd="src/ssdeep-lib"
+        )
+
+        if returncode != 0:
+            sys.exit("Failed while building ssdeep lib.")
+
+
+class build_ext(_build_ext):
+    def run(self):
+        if self.distribution.has_c_libraries():
+            build_clib = self.get_finalized_command("build_clib")
+            self.include_dirs.append(
+                os.path.join(build_clib.build_clib, "include"),
+            )
+            self.library_dirs.insert(
+                0,
+                os.path.join(build_clib.build_clib, "lib64"),
+            )
+            self.library_dirs.insert(
+                0,
+                os.path.join(build_clib.build_clib, "lib"),
+            )
+
+            # ToDo: Is there a better way?
+            for ext in self.extensions:
+                ext.extra_objects += get_objects()
+
+        return _build_ext.run(self)
+
+
+class Distribution(Distribution):
+    def has_c_libraries(self):
+        return not use_system_lib
 
 
 def get_objects():
@@ -88,6 +135,7 @@ def get_objects():
     if len(objects) > 0:
         return objects
     return glob.glob("src/ssdeep-lib/.libs/*.obj")
+
 
 about = {}
 with open(os.path.join(src_dir, "ssdeep", "__about__.py")) as f:
@@ -137,11 +185,11 @@ setup(
     ],
     keywords="ssdeep",
     install_requires=[
-        "cffi>=0.8.6",
+        "cffi>=1.0.0",
         "six>=1.4.1",
     ],
     setup_requires=[
-        "cffi>=0.8.6",
+        "cffi>=1.0.0",
         "six>=1.4.1",
     ] + setup_requires,
     tests_require=[
@@ -155,12 +203,12 @@ setup(
             "sphinx_rtd_theme",
         ],
     },
-    package_dir={'': 'src'},
-    packages=find_packages(where="src", exclude=["_cffi_src", "_cffi_src.*"]),
+    packages=[
+        "ssdeep"
+    ],
     include_package_data=True,
-    cmdclass={
-        "build": CFFIBuild,
-        "install": CFFIInstall,
-    },
-    ext_package="ssdeep",
+    cffi_modules=["src/ssdeep/_build.py:ffi"],
+    package_dir={"": "src"},
+    cmdclass={"build_clib": build_clib, "build_ext": build_ext},
+    distclass=Distribution,
 )
