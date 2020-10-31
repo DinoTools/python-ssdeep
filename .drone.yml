@@ -79,20 +79,6 @@ steps:
   - doc8 --verbose --allow-long-titles --max-line-length=9999 README.rst CHANGELOG.rst CONTRIBUTING.rst docs/source --ignore-path docs/_build/
 
 ---
-### Python 3.7
-kind: pipeline
-name: Python 3.7 - flake8
-
-steps:
-- name: test
-  image: registry.dinotools.org/docker-ci/python:3.7
-  commands:
-  - . /opt/python/venv/bin/activate
-  - python --version
-  - pip install flake8
-  - flake8 --ignore F401 src/ssdeep
-
----
 ### CentOS 7
 kind: pipeline
 name: CentOS 7, Python2, builtin
