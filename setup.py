@@ -13,7 +13,8 @@ import errno
 try:
     from setuptools.command.build_clib import build_clib as _build_clib
 except ImportError:
-    from distutils.command.build_clib import build_clib as _build_clib
+    # We ignore type checking because mypy shows an import error
+    from distutils.command.build_clib import build_clib as _build_clib  # type: ignore
 
 base_dir = os.path.dirname(__file__)
 src_dir = os.path.join(base_dir, "src")
