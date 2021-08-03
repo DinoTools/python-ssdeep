@@ -22,12 +22,21 @@ content and length.
     :target: https://python-ssdeep.readthedocs.io/en/latest/
     :alt: Latest Docs
 
-.. image:: https://travis-ci.org/DinoTools/python-ssdeep.svg?branch=master
-    :target: https://travis-ci.org/DinoTools/python-ssdeep
+.. image:: https://github.com/dinotools/python-ssdeep/actions/workflows/codeql-analysis.yml/badge.svg?branch=master
+    :target: https://github.com/DinoTools/python-ssdeep/actions/workflows/codeql-analysis.yml
+    :alt: CodeQL tests
 
-.. image:: https://ci.dinotools.org/buildStatus/icon?job=python-ssdeep-master
-    :target: https://ci.dinotools.org/job/python-ssdeep-master/
-    :alt: Build state
+.. image:: https://github.com/dinotools/python-ssdeep/actions/workflows/python-linux.yml/badge.svg?branch=master
+    :target: https://github.com/DinoTools/python-ssdeep/actions/workflows/python-linux.yml
+    :alt: CI test status on Linux
+
+.. image:: https://github.com/dinotools/python-ssdeep/actions/workflows/debian.yml/badge.svg?branch=master
+    :target: https://github.com/DinoTools/python-ssdeep/actions/workflows/debian.yml
+    :alt: CI test status on Debian
+
+.. image:: https://github.com/dinotools/python-ssdeep/actions/workflows/ubuntu.yml/badge.svg?branch=master
+    :target: https://github.com/DinoTools/python-ssdeep/actions/workflows/ubuntu.yml
+    :alt: CI test status on Debian
 
 
 How to use it
