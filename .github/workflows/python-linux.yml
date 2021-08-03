@@ -42,7 +42,7 @@ jobs:
           cd docs/source && \
             sphinx-build -W -b latex . ../_build/html
 
-  ubuntu_1804:
+  ubuntu_1804_system:
     runs-on: ubuntu-latest
     container: ubuntu:18.04
     steps:
@@ -57,8 +57,30 @@ jobs:
             python3-dev \
             python3-pip \
             python3-pytest \
+            python3-setuptools \
             libfuzzy-dev
       - name: Build
         run: BUILD_LIB=0 pip3 install .
+      - name: Test
+        run: py.test-3
+
+  ubuntu_1804_builtin:
+    runs-on: ubuntu-latest
+    container: ubuntu:18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          apt-get update && \
+          apt-get install -y --no-install-recommends \
+            build-essential \
+            libffi-dev \
+            python3 \
+            python3-dev \
+            python3-pip \
+            python3-pytest \
+            python3-setuptools
+      - name: Build
+        run: BUILD_LIB=1 pip3 install .
       - name: Test
         run: py.test-3
