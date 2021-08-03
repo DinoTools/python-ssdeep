@@ -1,4 +1,4 @@
-name: pre-commit
+name: Python on Linux
 
 on:
   pull_request:
@@ -31,3 +31,13 @@ jobs:
       - name: Run Tox
         # Run tox using the version of Python in `PATH`
         run: BUILD_LIB=0 tox -vvv -e py
+      - name: Install sphinx to build docs
+        run: pip install sphinx mock
+      - name: Build html
+        run: |
+          cd docs/source && \
+            sphinx-build -W -b html . ../_build/html
+      - name: Build latex
+        run: |
+          cd docs/source && \
+            sphinx-build -W -b latex . ../_build/html
