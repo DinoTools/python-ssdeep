@@ -1,0 +1,43 @@
+name: Python on Linux
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  schedule:
+    - cron: '35 8 * * 1'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: [3.6, 3.7, 3.8, 3.9]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            libffi-dev \
+            libfuzzy-dev
+      - name: Install Tox and any other packages
+        run: pip install tox
+      - name: Run Tox
+        # Run tox using the version of Python in `PATH`
+        run: BUILD_LIB=0 tox -vvv -e py
+      - name: Install sphinx to build docs
+        run: pip install sphinx mock
+      - name: Build html
+        run: |
+          cd docs/source && \
+            sphinx-build -W -b html . ../_build/html
+      - name: Build latex
+        run: |
+          cd docs/source && \
+            sphinx-build -W -b latex . ../_build/html
