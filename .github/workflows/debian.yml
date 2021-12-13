@@ -8,9 +8,13 @@ on:
     - cron: '10 7 * * 1'
 
 jobs:
-  debian_10_builtin:
+  debian_builtin:
     runs-on: ubuntu-latest
-    container: debian:10
+    strategy:
+      matrix:
+        container: ["debian:10", "debian:11"]
+    container:
+      image: ${{ matrix.container }}
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
@@ -32,9 +36,13 @@ jobs:
       - name: Test
         run: py.test-3
 
-  debian_10_system:
+  debian_system:
     runs-on: ubuntu-latest
-    container: debian:10
+    strategy:
+      matrix:
+        container: ["debian:10", "debian:11"]
+    container:
+      image: ${{ matrix.container }}
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
