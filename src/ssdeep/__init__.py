@@ -5,8 +5,6 @@ which is a library for computing Context Triggered Piecewise Hashes (CTPH).
 
 import os
 
-import six
-
 # Ignore flake8 F401 warning for unused vars
 from ssdeep.__about__ import (  # noqa: F401
     __author__, __copyright__, __email__, __license__, __summary__, __title__,
@@ -104,10 +102,10 @@ class Hash(BaseHash):
         if self._state == ffi.NULL:
             raise InternalError("State object is NULL")
 
-        if isinstance(buf, six.text_type):
+        if isinstance(buf, str):
             buf = buf.encode(encoding)
 
-        if not isinstance(buf, six.binary_type):
+        if not isinstance(buf, bytes):
             raise TypeError(
                 "Argument must be of string, unicode or bytes type not "
                 "'%r'" % type(buf)
@@ -179,10 +177,10 @@ class PseudoHash(BaseHash):
 
         """
 
-        if isinstance(buf, six.text_type):
+        if isinstance(buf, str):
             buf = buf.encode(encoding)
 
-        if not isinstance(buf, six.binary_type):
+        if not isinstance(buf, bytes):
             raise TypeError(
                 "Argument must be of string, unicode or bytes type not "
                 "'%r'" % type(buf)
@@ -222,18 +220,18 @@ def compare(sig1, sig2):
 
     """
 
-    if isinstance(sig1, six.text_type):
+    if isinstance(sig1, str):
         sig1 = sig1.encode("ascii")
-    if isinstance(sig2, six.text_type):
+    if isinstance(sig2, str):
         sig2 = sig2.encode("ascii")
 
-    if not isinstance(sig1, six.binary_type):
+    if not isinstance(sig1, bytes):
         raise TypeError(
             "First argument must be of string, unicode or bytes type not "
             "'%s'" % type(sig1)
         )
 
-    if not isinstance(sig2, six.binary_type):
+    if not isinstance(sig2, bytes):
         raise TypeError(
             "Second argument must be of string, unicode or bytes type not "
             "'%r'" % type(sig2)
@@ -258,10 +256,10 @@ def hash(buf, encoding="utf-8"):
 
     """
 
-    if isinstance(buf, six.text_type):
+    if isinstance(buf, str):
         buf = buf.encode(encoding)
 
-    if not isinstance(buf, six.binary_type):
+    if not isinstance(buf, bytes):
         raise TypeError(
             "Argument must be of string, unicode or bytes type not "
             "'%r'" % type(buf)
