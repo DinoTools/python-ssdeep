@@ -182,11 +182,9 @@ setup(
     keywords="ssdeep",
     install_requires=[
         "cffi>=1.0.0",
-        "six>=1.4.1",
     ],
     setup_requires=[
         "cffi>=1.0.0",
-        "six>=1.4.1",
     ] + setup_requires,
     tests_require=[
         "pytest",
