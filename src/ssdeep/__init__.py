@@ -4,6 +4,7 @@ which is a library for computing Context Triggered Piecewise Hashes (CTPH).
 """
 
 import os
+from typing import Union
 
 # Ignore flake8 F401 warning for unused vars
 from ssdeep.__about__ import (  # noqa: F401
@@ -29,7 +30,7 @@ class BaseHash(object):
     PseudoHash class.
     """
     @property
-    def block_size(self):
+    def block_size(self) -> int:
         """
         The block size used to calculate the hash.
         This depends on the length of the source string.
@@ -40,7 +41,7 @@ class BaseHash(object):
         return int(size)
 
     @property
-    def name(self):
+    def name(self) -> str:
         """
         The canonical name of this hash
 
@@ -48,7 +49,7 @@ class BaseHash(object):
         """
         return "ssdeep"
 
-    def digest(self, elimseq=False, notrunc=False):
+    def digest(self, elimseq: bool = False, notrunc: bool = False):
         raise NotImplementedError
 
 
@@ -69,7 +70,7 @@ class Hash(BaseHash):
         if self._state == ffi.NULL:
             raise InternalError("Unable to create state object")
 
-    def copy(self):
+    def copy(self) -> "Hash":
         """
         Create a copy of this hash object.
 
@@ -88,7 +89,7 @@ class Hash(BaseHash):
         new._state = newstate
         return new
 
-    def update(self, buf, encoding="utf-8"):
+    def update(self, buf: Union[bytes, str], encoding="utf-8") -> None:
         """
          Feed the data contained in the given buffer to the state.
 
@@ -115,7 +116,7 @@ class Hash(BaseHash):
             lib.fuzzy_free(self._state)
             raise InternalError("Invalid state object")
 
-    def digest(self, elimseq=False, notrunc=False):
+    def digest(self, elimseq: bool = False, notrunc: bool = False) -> str:
         """
         Obtain the fuzzy hash.
 
@@ -155,7 +156,7 @@ class PseudoHash(BaseHash):
     def __init__(self):
         self._data = b""
 
-    def copy(self):
+    def copy(self) -> "PseudoHash":
         """
         Create a copy of this hash object.
 
@@ -167,7 +168,7 @@ class PseudoHash(BaseHash):
         new.update(self._data)
         return new
 
-    def update(self, buf, encoding="utf-8"):
+    def update(self, buf: Union[bytes, str], encoding: str = "utf-8") -> None:
         """
          Feed the data contained in the given buffer to the state.
 
@@ -188,7 +189,7 @@ class PseudoHash(BaseHash):
 
         self._data = self._data + buf
 
-    def digest(self, elimseq=False, notrunc=False):
+    def digest(self, elimseq: bool = False, notrunc: bool = False) -> str:
         """
         Obtain the fuzzy hash.
 
@@ -203,7 +204,7 @@ class PseudoHash(BaseHash):
         return hash(self._data)
 
 
-def compare(sig1, sig2):
+def compare(sig1: Union[bytes, str], sig2: Union[bytes, str]) -> int:
     """
     Computes the match score between two fuzzy hash signatures.
 
@@ -244,11 +245,12 @@ def compare(sig1, sig2):
     return res
 
 
-def hash(buf, encoding="utf-8"):
+def hash(buf: Union[bytes, str], encoding: str = "utf-8") -> str:
     """
     Compute the fuzzy hash of a buffer
 
     :param String|Bytes buf: The data to be fuzzy hashed
+    :param encoding: Encoding is used if buf is String
     :return: The fuzzy hash
     :rtype: String
     :raises InternalError: If lib returns an internal error
@@ -273,13 +275,13 @@ def hash(buf, encoding="utf-8"):
     return ffi.string(result).decode("ascii")
 
 
-def hash_from_file(filename):
+def hash_from_file(filename: str) -> str:
     """
     Compute the fuzzy hash of a file.
 
     Opens, reads, and hashes the contents of the file 'filename'
 
-    :param String|Bytes filename: The name of the file to be hashed
+    :param filename: The name of the file to be hashed
     :return: The fuzzy hash of the file
     :rtype: String
     :raises IOError: If Python is unable to read the file

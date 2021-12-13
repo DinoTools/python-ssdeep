@@ -1,7 +1,9 @@
+from typing import Dict, List, Tuple
+
 import cffi
 
 
-cdef = """
+cdef: str = """
     static const long FUZZY_FLAG_ELIMSEQ;
     static const long FUZZY_FLAG_NOTRUNC;
     static const long FUZZY_MAX_RESULT;
@@ -55,7 +57,7 @@ cdef = """
     static const long ssdeep_HAS_STATEFUL_HASHING;
 """
 
-source = """
+source: str = """
     #include "fuzzy.h"
 
     #ifndef FUZZY_FLAG_ELIMSEQ
@@ -90,7 +92,7 @@ source = """
     #endif
 """
 
-CONDITIONAL_NAMES = {
+CONDITIONAL_NAMES: Dict[str, Tuple] = {
     "ssdeep_HAS_STATEFUL_HASHING": (
         "FUZZY_FLAG_ELIMSEQ",
         "FUZZY_FLAG_NOTRUNC",
@@ -103,9 +105,9 @@ CONDITIONAL_NAMES = {
     )
 }
 
-libraries = ["fuzzy"]
+libraries: List[str] = ["fuzzy"]
 
-ffi = cffi.FFI()
+ffi: cffi.FFI = cffi.FFI()
 ffi.set_source(
     "ssdeep._libfuzzy",
     source,
