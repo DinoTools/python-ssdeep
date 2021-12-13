@@ -6,6 +6,12 @@ Changelog
 
 .. note:: This version is not yet released and is under development.
 
+3.4.1 (2021-12-13)
+~~~~~~~~~~~~~~~~~~
+
+* Add internal build improvements
+* Update CI pipelines
+
 3.4 (2019-10-01)
 ~~~~~~~~~~~~~~~~
 
