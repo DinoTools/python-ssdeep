@@ -8,9 +8,13 @@ on:
     - cron: '43 6 * * 1'
 
 jobs:
-  ubuntu_1804_builtin:
+  ubuntu_builtin:
     runs-on: ubuntu-latest
-    container: ubuntu:18.04
+    strategy:
+      matrix:
+        container: ["ubuntu:18.04", "ubuntu:20.04"]
+    container:
+      image: ${{ matrix.container }}
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
@@ -32,9 +36,13 @@ jobs:
       - name: Test
         run: py.test-3
 
-  ubuntu_1804_system:
+  ubuntu_system:
     runs-on: ubuntu-latest
-    container: ubuntu:18.04
+    strategy:
+      matrix:
+        container: ["ubuntu:18.04", "ubuntu:20.04"]
+    container:
+      image: ${{ matrix.container }}
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
